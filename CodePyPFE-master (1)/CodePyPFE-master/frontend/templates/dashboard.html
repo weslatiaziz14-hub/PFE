@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MMC KPI Dashboard 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#0c0e16;--surf:#13161f;--surf2:#191d2b;--surf3:#1e2235;
+  --b1:#252a3d;--b2:#2d3450;
+  --txt:#e2e8f0;--mid:#94a3b8;--dim:#4a5568;
+  --acc:#3b82f6;--grn:#10b981;--amb:#f59e0b;--red:#ef4444;
+  --cnc:#6366f1;--asm:#10b981;--mmc:#f59e0b;--eff:#a78bfa;--fg:#34d399;--tgt:#3b82f6;
+  --shadow:0 2px 12px rgba(0,0,0,.4);--grid:rgba(37,42,61,.7);
+}
+[data-theme="light"]{
+  --bg:#f0f4f8;--surf:#fff;--surf2:#f8fafc;--surf3:#eef2f7;
+  --b1:#d1dbe8;--b2:#b8c8da;--txt:#1a2332;--mid:#4a6080;--dim:#8a9ab0;
+  --acc:#2563eb;--grn:#059669;--amb:#d97706;--red:#dc2626;
+  --cnc:#4f46e5;--asm:#059669;--mmc:#d97706;--eff:#7c3aed;--fg:#10b981;--tgt:#2563eb;
+  --shadow:0 2px 12px rgba(0,0,0,.1);--grid:rgba(180,200,218,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;transition:background .25s,color .25s}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(5px);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.ov.open{opacity:1;pointer-events:all}
+.modal{background:var(--surf2);border:1px solid var(--b2);border-radius:16px;padding:32px;width:100%;max-width:460px;transform:translateY(12px);transition:transform .22s;box-shadow:var(--shadow);position:relative}
+.ov.open .modal{transform:translateY(0)}
+.modal.wide{max-width:660px;max-height:90vh;overflow-y:auto}
+.mc{position:absolute;top:13px;right:15px;background:none;border:none;color:var(--dim);font-size:19px;cursor:pointer}
+.mc:hover{color:var(--txt)}
+.mt{font-size:19px;font-weight:700;margin-bottom:4px}
+.ms{font-size:13px;color:var(--mid);margin-bottom:22px}
+.fgg{margin-bottom:14px}
+.fl{font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:5px}
+.fi{width:100%;padding:10px 13px;background:var(--surf3);border:1px solid var(--b2);border-radius:8px;color:var(--txt);font-size:14px;font-family:inherit;outline:none;transition:border-color .18s}
+.fi:focus{border-color:var(--acc)}
+.ferr{font-size:12px;color:var(--red);margin-top:4px;display:none}
+.btn{width:100%;padding:11px;border:none;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:4px;transition:opacity .18s}
+.bp{background:var(--acc);color:#fff}.bp:hover{opacity:.87}
+.bs{background:transparent;border:1px solid var(--b2);color:var(--mid);margin-top:7px}.bs:hover{border-color:var(--mid);color:var(--txt)}
+.msw{text-align:center;margin-top:14px;font-size:13px;color:var(--mid)}
+.msw a{color:var(--acc);cursor:pointer}
+/* TARGETS MODAL */
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.ti label{font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:4px}
+.ti input{width:100%;padding:9px 11px;background:var(--surf3);border:1px solid var(--b2);border-radius:7px;color:var(--txt);font-size:14px;font-family:'DM Mono',monospace;outline:none;transition:border-color .18s}
+.ti input:focus{border-color:var(--acc)}
+.mfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+.bsave{padding:10px 22px;background:var(--acc);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:opacity .18s}
+.bsave:hover{opacity:.87}
+.bcan{padding:10px 14px;background:transparent;border:1px solid var(--b2);border-radius:8px;color:var(--mid);font-size:13px;font-family:inherit;cursor:pointer}
+/* NOTIF */
+.np{position:fixed;top:66px;right:16px;width:330px;background:var(--surf2);border:1px solid var(--b2);border-radius:13px;z-index:200;box-shadow:var(--shadow);transform:translateY(-8px) scale(.97);opacity:0;pointer-events:none;transition:all .2s}
+.np.open{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
+.nh{padding:13px 17px 9px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between}
+.ntit{font-size:13px;font-weight:600}.ncl{font-size:11px;color:var(--acc);cursor:pointer}
+.nl{max-height:300px;overflow-y:auto;padding:4px 0}
+.ni{padding:10px 17px;border-bottom:1px solid rgba(37,42,61,.4);display:flex;gap:10px;align-items:flex-start;cursor:pointer;transition:background .14s}
+.ni:hover{background:rgba(128,128,128,.06)}.ni:last-child{border-bottom:none}
+.nd{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.nd.r{background:var(--red)}.nd.a{background:var(--amb)}.nd.g{background:var(--grn)}
+.nm{font-size:12px;line-height:1.4}.nts{font-size:11px;color:var(--dim);margin-top:2px}
+.nem{padding:24px 17px;text-align:center;color:var(--dim);font-size:13px}
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--surf2);border:1px solid var(--grn);border-radius:9px;padding:10px 17px;font-size:13px;color:var(--grn);z-index:400;transform:translateY(8px);opacity:0;transition:all .22s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+/* HEADER */
+header{padding:0 24px;height:60px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;background:var(--surf);position:sticky;top:0;z-index:100;transition:background .25s}
+.logo{display:flex;align-items:center;gap:10px}
+.li-icon{width:31px;height:31px;border-radius:8px;background:linear-gradient(135deg,var(--acc),var(--cnc));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.lt{font-size:15px;font-weight:700}.ls{font-size:11px;color:var(--dim);margin-top:1px}
+.hr{display:flex;align-items:center;gap:6px}
+.hb{height:33px;padding:0 11px;border-radius:7px;border:1px solid var(--b2);background:transparent;color:var(--mid);font-size:12px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .14s;white-space:nowrap}
+.hb:hover{color:var(--txt);border-color:var(--mid)}
+.hb.ico{width:33px;padding:0;justify-content:center;font-size:16px}
+.hb.dng{border-color:rgba(239,68,68,.3);color:var(--red)}.hb.dng:hover{background:rgba(239,68,68,.1)}
+.theme-btn{height:33px;padding:0 11px;border-radius:20px;border:1px solid var(--b2);background:var(--surf3);color:var(--mid);font-size:12px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+.theme-btn:hover{border-color:var(--acc);color:var(--acc)}
+.nbw{position:relative}
+.nbb{position:absolute;top:-4px;right:-4px;width:15px;height:15px;border-radius:50%;background:var(--red);font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid var(--surf)}
+.uc{display:flex;align-items:center;gap:6px;padding:3px 10px 3px 4px;border-radius:20px;border:1px solid var(--b2);background:var(--surf3)}
+.ua{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--cnc),var(--acc));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.un{font-size:12px;font-weight:500;color:var(--mid)}
+/* NAV */
+nav{padding:0 24px;border-bottom:1px solid var(--b1);background:var(--surf);display:flex;overflow-x:auto;scrollbar-width:none;transition:background .25s}
+nav::-webkit-scrollbar{display:none}
+.tab{padding:11px 15px;font-size:13px;font-weight:500;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .14s;white-space:nowrap;user-select:none}
+.tab:hover{color:var(--mid)}.tab.active{color:var(--acc);border-bottom-color:var(--acc)}
+/* FILTER BAR */
+.fbar{padding:9px 24px;background:var(--surf);border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:11px;flex-wrap:wrap;transition:background .25s}
+.flab{font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;flex-shrink:0}
+.seg{display:flex;background:var(--surf3);border:1px solid var(--b1);border-radius:7px;padding:2px;gap:2px}
+.sb{padding:4px 11px;border-radius:5px;border:none;background:transparent;color:var(--dim);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .14s}
+.sb.active{background:var(--acc);color:#fff}.sb:hover:not(.active){color:var(--txt)}
+.ycs{display:flex;gap:3px;flex-wrap:wrap}
+.yc{padding:3px 10px;border-radius:5px;border:1px solid var(--b2);background:transparent;color:var(--dim);font-size:12px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .14s}
+.yc.active{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+.yc:hover:not(.active){border-color:var(--mid);color:var(--txt)}
+.divv{width:1px;height:20px;background:var(--b1);margin:0 1px;flex-shrink:0}
+.rbadge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--grn);background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);border-radius:20px;padding:3px 10px;margin-left:auto;cursor:pointer;transition:all .2s;white-space:nowrap}
+.rbadge:hover{background:rgba(16,185,129,.18)}
+.rb-dot{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+/* MAIN */
+main{padding:18px 24px;max-width:1700px}
+.sec{display:none}.sec.active{display:block}
+/* KPI CARDS */
+.kr{display:grid;gap:11px;margin-bottom:16px}
+.r3{grid-template-columns:repeat(3,1fr)}.r4{grid-template-columns:repeat(4,1fr)}.r5{grid-template-columns:repeat(5,1fr)}
+.kc{background:var(--surf);border:1px solid var(--b1);border-radius:11px;padding:15px 17px;position:relative;overflow:hidden;transition:background .25s,border-color .25s}
+.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--acc)}
+.kc.cnc::before{background:var(--cnc)}.kc.asm::before{background:var(--asm)}.kc.mmc::before{background:var(--mmc)}.kc.eff::before{background:var(--eff)}.kc.fg::before{background:var(--fg)}.kc.red::before{background:var(--red)}.kc.amb::before{background:var(--amb)}
+.kl{font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.kv{font-size:25px;font-weight:700;font-family:'DM Mono',monospace;line-height:1}
+.kv.good{color:var(--grn)}.kv.warn{color:var(--amb)}.kv.bad{color:var(--red)}.kv.blue{color:var(--acc)}.kv.neutral{color:var(--txt)}
+.kt{font-size:11px;color:var(--dim);margin-top:5px}.kt span{color:var(--tgt);font-weight:600}
+.kb{height:3px;background:var(--b2);border-radius:2px;margin-top:7px;overflow:hidden}
+.kb-f{height:100%;border-radius:2px;transition:width .5s}
+/* CHART CARDS */
+.cr{display:grid;gap:14px;margin-bottom:14px}
+.cr1{grid-template-columns:1fr}.cr2{grid-template-columns:1fr 1fr}.cr3{grid-template-columns:1fr 1fr 1fr}
+.cc{background:var(--surf);border:1px solid var(--b1);border-radius:11px;padding:18px;transition:background .25s,border-color .25s}
+.cc.MAIN{border-color:rgba(245,158,11,.38);box-shadow:0 0 20px rgba(245,158,11,.07)}
+.ctit{font-size:13px;font-weight:600;color:var(--txt);display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cmet{font-size:11px;color:var(--dim);margin-bottom:10px;line-height:1.4}
+.cw{position:relative}
+.leg{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:9px}
+.li{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mid)}
+.ld{width:10px;height:10px;border-radius:2px}
+.ll{width:16px;height:0;border-top:2px dashed var(--tgt)}
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:7px 10px;text-align:left;font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--b1)}
+.tbl td{padding:7px 10px;border-bottom:1px solid rgba(37,42,61,.3);color:var(--mid);font-family:'DM Mono',monospace;font-size:12px}
+.tbl tr:last-child td{border-bottom:none}.tbl tr:hover td{background:rgba(128,128,128,.05)}
+.pill{display:inline-block;padding:1px 7px;border-radius:9px;font-size:10px;font-weight:700}
+.pill.good{background:rgba(16,185,129,.13);color:var(--grn)}
+.pill.warn{background:rgba(245,158,11,.13);color:var(--amb)}
+.pill.bad{background:rgba(239,68,68,.13);color:var(--red)}
+.fb{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.18);border-radius:7px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);margin-bottom:13px;line-height:1.9}
+.fb strong{color:var(--acc)}
+.note{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:7px;padding:9px 13px;font-size:12px;color:var(--amb);margin-bottom:13px}
+.extra-card{background:var(--surf);border:1px solid var(--b1);border-radius:11px;padding:16px;margin-bottom:14px}
+.extra-card h3{font-size:13px;font-weight:600;margin-bottom:10px}
+.tscroll{max-height:320px;overflow-y:auto}
+.spinner-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;gap:14px;color:var(--dim);font-size:13px}
+.spinner{width:36px;height:36px;border:3px solid var(--b2);border-top-color:var(--acc);border-radius:50%;animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* RFT PER PROCESS — special chart container */
+.process-chart-wrap{position:relative}
+.process-section-label{position:absolute;bottom:-28px;font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;text-align:center;pointer-events:none}
+.process-divider{display:flex;align-items:center;gap:8px;margin:8px 0 4px;font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.6px}
+.process-divider::before,.process-divider::after{content:'';flex:1;height:1px;background:var(--b2)}
+@media(max-width:1100px){.r4,.r5{grid-template-columns:repeat(2,1fr)}.cr2,.cr3{grid-template-columns:1fr}}
+@media(max-width:640px){main{padding:12px 14px}header,nav,.fbar{padding-left:14px;padding-right:14px}.r3{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="ov" id="ov-login">
+<div class="modal">
+  <div class="logo" style="margin-bottom:20px"><div class="li-icon">M</div><div><div class="lt">MMC Dashboard 2026</div><div class="ls">Connexion requise</div></div></div>
+  <div class="mt">Bienvenue</div><div class="ms">Connectez-vous pour accéder aux KPIs</div>
+  <div class="fgg"><label class="fl">Nom d'utilisateur</label><input class="fi" id="lu" placeholder="admin" value="admin" autocomplete="username"></div>
+  <div class="fgg"><label class="fl">Mot de passe</label><input class="fi" id="lp" type="password" placeholder="••••••••" value="admin123" autocomplete="current-password"><div class="ferr" id="lerr">Identifiants incorrects</div></div>
+  <button class="btn bp" onclick="doLogin()">Se connecter</button>
+  <div class="msw">Pas de compte ? <a onclick="sw('ov-reg')">Créer un compte</a></div>
+</div></div>
+
+<!-- REGISTER -->
+<div class="ov" id="ov-reg">
+<div class="modal">
+  <div class="mt">Créer un compte</div><div class="ms">Username + mot de passe</div>
+  <div class="fgg"><label class="fl">Nom d'utilisateur</label><input class="fi" id="ru" placeholder="manager" autocomplete="username"></div>
+  <div class="fgg"><label class="fl">Mot de passe</label><input class="fi" id="rp" type="password" placeholder="••••••••"></div>
+  <div class="fgg"><label class="fl">Confirmer</label><input class="fi" id="rp2" type="password" placeholder="••••••••"><div class="ferr" id="rerr">—</div></div>
+  <button class="btn bp" onclick="doReg()">Créer mon compte</button>
+  <button class="btn bs" onclick="sw('ov-login')">← Retour</button>
+</div></div>
+
+<!-- TARGETS MODAL — all values editable, persist via localStorage -->
+<div class="ov" id="ov-tgt">
+<div class="modal wide">
+  <button class="mc" onclick="closeOv('ov-tgt')">✕</button>
+  <div class="mt">⚙️ Objectifs KPI</div>
+  <div class="ms">Modifiez les cibles — les graphiques se mettent à jour instantanément</div>
+  <div class="tgrid">
+    <div class="ti"><label>RFT MMC (%)</label><input type="number" id="t-rfm" step=".1" min="0" max="100"></div>
+    <div class="ti"><label>Taux Erreur MMC (%)</label><input type="number" id="t-tmmc" step=".1" min="0" max="100"></div>
+    <div class="ti"><label>RFT CNC (%)</label><input type="number" id="t-rfc" step=".1" min="0" max="100"></div>
+    <div class="ti"><label>Taux Erreur CNC (%)</label><input type="number" id="t-tec" step=".1" min="0" max="100"></div>
+    <div class="ti"><label>RFT Assembly (%)</label><input type="number" id="t-rfa" step=".1" min="0" max="100"></div>
+    <div class="ti"><label>Taux Erreur Assembly (%)</label><input type="number" id="t-tea" step=".1" min="0" max="100"></div>
+    <div class="ti"><label>Efficacité CNC (%)</label><input type="number" id="t-eff" step=".1" min="0" max="100"></div>
+    <div class="ti"><label>RFT Duplication (%)</label><input type="number" id="t-rfd" step=".1" min="0" max="100"></div>
+    <div class="ti"><label>RFT Prototype (%)</label><input type="number" id="t-rfp" step=".1" min="0" max="100"></div>
+    <div class="ti"><label>Finish Good Target (pcs)</label><input type="number" id="t-fg" step="1" min="0"></div>
+    <div class="ti"><label>FG Stretch (pcs)</label><input type="number" id="t-fgs" step="1" min="0"></div>
+    <div class="ti"><label>FG Intervention (pcs)</label><input type="number" id="t-fgi" step="1" min="0"></div>
+  </div>
+  <div class="mfoot">
+    <button class="bcan" onclick="closeOv('ov-tgt')">Annuler</button>
+    <button class="bsave" onclick="saveTgt()">💾 Appliquer &amp; Sauvegarder</button>
+  </div>
+</div></div>
+
+<!-- NOTIF -->
+<div class="np" id="np">
+  <div class="nh">
+    <div>
+      <div class="ntit">🔔 Alertes KPI</div>
+      <div style="font-size:10px;color:var(--dim);margin-top:2px" id="notif-summary"></div>
+    </div>
+    <div class="ncl" onclick="clearN()">Ignorer tout</div>
+  </div>
+  <div class="nl" id="nl"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo"><div class="li-icon">M</div><div><div class="lt">MMC KPI Dashboard 2026</div><div class="ls">Digitalisation des indicateurs qualité · <span id="refresh-status">Auto-refresh 5 min</span></div></div></div>
+  <div class="hr">
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙 Sombre</button>
+    <button class="hb" onclick="manualRefresh()" id="btn-refresh">🔄 Actualiser</button>
+    <button class="hb" onclick="openTgt()">⚙️ Objectifs</button>
+    <div class="nbw"><button class="hb ico" onclick="toggleN()">🔔</button><div class="nbb" id="nbb">0</div></div>
+    <div class="uc"><div class="ua" id="hav">{{ username[0].upper() if username else 'M' }}</div><span class="un" id="hun">{{ username if username else 'manager' }}</span></div>
+    <a href="/logout" class="hb dng" style="text-decoration:none">↩ Déconnexion</a>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <div class="tab active" onclick="showTab('global',this)">🌐 Global RFT</div>
+  <div class="tab" onclick="showTab('cnc',this)">⚙️ CNC</div>
+  <div class="tab" onclick="showTab('asm',this)">🔧 Assembly</div>
+  <div class="tab" onclick="showTab('fg',this)">✅ Finish Good</div>
+  <div class="tab" onclick="showTab('daily',this)">📅 Journalier</div>
+  <div class="tab" onclick="showTab('extra',this)">📁 Fichiers Sup.</div>
+</nav>
+
+<!-- FILTER BAR -->
+<div class="fbar">
+  <span class="flab">Période</span>
+  <div class="seg">
+    <button class="sb" onclick="setPeriod('daily',this)">Journalier</button>
+    <button class="sb" onclick="setPeriod('monthly',this)">Mensuel</button>
+    <button class="sb active" onclick="setPeriod('yearly',this)">Annuel</button>
+  </div>
+  <div class="divv"></div>
+  <div id="ygr" style="display:flex;align-items:center;gap:7px">
+    <span class="flab">Année</span><div class="ycs" id="ycs"></div>
+  </div>
+  <div class="divv" id="mgrdiv" style="display:none"></div>
+  <div id="mgr" style="display:none;align-items:center;gap:7px">
+    <span class="flab">Mois</span><div class="ycs" id="mcs"></div>
+  </div>
+  <div class="rbadge" onclick="manualRefresh()" title="Cliquer pour actualiser">
+    <div class="rb-dot"></div>Auto-refresh · <span id="rt">5:00</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+<!-- ══ GLOBAL ══════════════════════════════════════════════════════════════ -->
+<div id="tab-global" class="sec active">
+  <div class="kr r5">
+    <div class="kc mmc"><div class="kl">RFT MMC</div><div class="kv" id="g-mmc">—</div><div class="kt">Objectif : <span id="tl-mmc">80%</span></div><div class="kb"><div class="kb-f" id="kb-mmc"></div></div></div>
+    <div class="kc cnc"><div class="kl">RFT CNC</div><div class="kv" id="g-cnc">—</div><div class="kt">Objectif : <span id="tl-cnc">94%</span></div><div class="kb"><div class="kb-f" id="kb-cnc"></div></div></div>
+    <div class="kc asm"><div class="kl">RFT Assembly</div><div class="kv" id="g-asm">—</div><div class="kt">Objectif : <span id="tl-asm">90%</span></div><div class="kb"><div class="kb-f" id="kb-asm"></div></div></div>
+    <div class="kc red"><div class="kl">Taux Erreur MMC</div><div class="kv" id="g-taux-mmc">—</div><div class="kt">Objectif ≤ <span id="tl-tmmc">20%</span></div></div>
+    <div class="kc fg"><div class="kl">Finish Good</div><div class="kv blue" id="g-fg">—</div><div class="kt" id="g-fg-sub">pièces</div></div>
+  </div>
+
+  <div class="cr cr1">
+    <div class="cc MAIN">
+      <div class="ctit"><div class="dot" style="background:var(--mmc)"></div><span id="g-main-title">RFT MMC ★</span></div>
+      <div class="cmet" id="g-meta">RFT_MMC = 1 − Taux_erreur_MMC = ((Qte − (Nbre_déf + Quantité)) / Qte) × 100</div>
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:#10b981"></div>≥ Objectif</div>
+        <div class="li"><div class="ld" style="background:#ef4444"></div>&lt; Objectif</div>
+        <div class="li"><div class="ll"></div>Objectif <span id="leg-mmc">80%</span></div>
+      </div>
+      <div class="cw" style="height:290px"><canvas id="c-gm"></canvas></div>
+    </div>
+  </div>
+
+  <div class="cr cr3">
+    <div class="cc">
+      <div class="ctit"><div class="dot" style="background:var(--cnc)"></div>RFT CNC</div>
+      <div class="cmet" id="g-cnc-meta">—</div>
+      <div class="leg"><div class="li"><div class="ll"></div>Objectif <span id="leg-cnc">94%</span></div></div>
+      <div class="cw" style="height:210px"><canvas id="c-gc"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ctit"><div class="dot" style="background:var(--asm)"></div>RFT Assembly</div>
+      <div class="cmet" id="g-asm-meta">—</div>
+      <div class="leg"><div class="li"><div class="ll"></div>Objectif <span id="leg-asm">90%</span></div></div>
+      <div class="cw" style="height:210px"><canvas id="c-ga"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ctit"><div class="dot" style="background:var(--red)"></div>Taux de Erreur MMC</div>
+      <div class="cmet">((Nbre_déf + Quantité) / Qte) × 100 — Rouge si &gt; objectif</div>
+      <div class="leg"><div class="li"><div class="ll"></div>Objectif ≤ <span id="leg-tmmc">20%</span></div></div>
+      <div class="cw" style="height:210px"><canvas id="c-taux-mmc"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ── RFT RATE PER PROCESS (moved to Global per requirement #3) ──────── -->
+  <div class="cr cr1">
+    <div class="cc">
+      <div class="ctit"><div class="dot" style="background:var(--acc)"></div>RFT Rate per Process — <span id="process-period-label">Période sélectionnée</span></div>
+      <div class="cmet">Source : Suivi_defauts_CNC.xlsx + Saisie_controle_Finale.xlsx · Vert ≥ objectif, Rouge &lt; objectif · Ligne bleue = objectif individuel par process</div>
+      <!-- Legend matching screenshot exactly -->
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:#10b981"></div>%RFT ≥ Objectif</div>
+        <div class="li"><div class="ld" style="background:#ef4444"></div>%RFT &lt; Objectif</div>
+        <div class="li"><div class="ll"></div>Objectif RFT (ligne bleue)</div>
+      </div>
+      <!-- Two sub-charts side by side to match screenshot: two groups in ONE chart area -->
+      <div style="display:grid;grid-template-columns:1fr 20px 1fr;gap:0;align-items:end">
+        <div>
+          <div class="process-divider">Duplication</div>
+          <div class="cw" style="height:260px"><canvas id="c-rft-dup"></canvas></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;height:260px;margin-top:21px">
+          <div style="width:1px;height:100%;background:var(--b2);position:relative">
+            <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-90deg);white-space:nowrap;font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.5px;background:var(--surf);padding:0 4px">Zone de traçage</span>
+          </div>
+        </div>
+        <div>
+          <div class="process-divider">Prototype</div>
+          <div class="cw" style="height:260px"><canvas id="c-rft-proto"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cc" style="margin-bottom:14px">
+    <div class="ctit" style="margin-bottom:12px">📊 Tableau récapitulatif</div>
+    <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+      <th>Période</th><th>Qte</th><th>Déf CNC</th><th>Déf Asm</th><th>FG</th>
+      <th>RFT MMC</th><th>RFT CNC</th><th>RFT Asm</th><th>Tx Err CNC</th><th>Tx Err Asm</th><th>Tx Err MMC</th>
+    </tr></thead><tbody id="g-tbl"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ══ CNC ════════════════════════════════════════════════════════════════ -->
+<div id="tab-cnc" class="sec">
+  <div class="fb">
+    <strong>RFT CNC</strong> = ((Qte − Nbre_défauts) / Qte) × 100 &nbsp;|&nbsp;
+    <strong>Taux Erreur CNC</strong> = (Nbre_défauts / Qte) × 100 &nbsp;|&nbsp;
+    <strong>Efficacité</strong> = ((Nbre_pièces_ctrl − Nbre_déf) / Nbre_pièces_ctrl) × 100<br>
+    <strong>Source :</strong> Suivi_defauts_CNC.xlsx — Feuil2
+  </div>
+  <div class="kr r4">
+    <div class="kc cnc"><div class="kl">RFT CNC</div><div class="kv" id="c-rft">—</div><div class="kt">Objectif : <span id="tl-crft">94%</span></div><div class="kb"><div class="kb-f" id="kb-crft"></div></div></div>
+    <div class="kc red"><div class="kl">Taux Erreur CNC</div><div class="kv" id="c-taux">—</div><div class="kt">Objectif ≤ <span id="tl-ctaux">6%</span></div></div>
+    <div class="kc eff"><div class="kl">Efficacité CNC</div><div class="kv" id="c-eff">—</div><div class="kt">Objectif : <span id="tl-eff">94%</span></div><div class="kb"><div class="kb-f" id="kb-ceff"></div></div></div>
+    <div class="kc cnc"><div class="kl">RFT + Taux Erreur</div><div class="kv good">= 100%</div><div class="kt">Complémentaires ✓</div></div>
+  </div>
+  <div class="cr cr2">
+    <div class="cc">
+      <div class="ctit"><div class="dot" style="background:var(--cnc)"></div>RFT CNC — <span style="color:var(--dim);font-weight:400">Vert ≥ objectif, Rouge &lt; objectif</span></div>
+      <div class="leg"><div class="li"><div class="ll"></div>Objectif <span id="leg-crft">94%</span></div></div>
+      <div class="cw" style="height:240px"><canvas id="c-cnc-rft"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ctit"><div class="dot" style="background:var(--red)"></div>Taux de Erreur CNC — <span style="color:var(--dim);font-weight:400">Vert ≤ objectif, Rouge &gt; objectif</span></div>
+      <div class="leg"><div class="li"><div class="ll"></div>Objectif ≤ <span id="leg-ctaux">6%</span></div></div>
+      <div class="cw" style="height:240px"><canvas id="c-cnc-taux"></canvas></div>
+    </div>
+  </div>
+  <div class="cr cr2">
+    <div class="cc">
+      <div class="ctit"><div class="dot" style="background:var(--eff)"></div>Efficacité CNC</div>
+      <div class="leg"><div class="li"><div class="ll"></div>Objectif <span id="leg-eff">94%</span></div></div>
+      <div class="cw" style="height:210px"><canvas id="c-cnc-eff"></canvas></div>
+    </div>
+    <div class="cc" style="grid-column:1/-1">
+      <div class="ctit"><div class="dot" style="background:var(--cnc)"></div>Pareto — Types de défauts CNC</div>
+      <div class="cmet">Top 10 défauts par nombre d'occurrences — Source : Suivi_defauts_CNC.xlsx</div>
+      <div class="cw" style="height:280px"><canvas id="c-cnc-pareto"></canvas></div>
+    </div>
+    <div class="cc" style="grid-column:1/-1">
+      <div class="ctit"><div class="dot" style="background:var(--amb)"></div>Pareto — Actions correctives CNC</div>
+      <div class="cmet">Action corrective principale associée à chaque type de défaut</div>
+      <div class="cw" style="height:280px"><canvas id="c-cnc-actions"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ASSEMBLY ══════════════════════════════════════════════════════════ -->
+<div id="tab-asm" class="sec">
+  <div class="fb">
+    <strong>RFT Assembly</strong> = ((Qte − Quantité) / Qte) × 100 &nbsp;|&nbsp;
+    <strong>Taux Erreur Assembly</strong> = (Quantité / Qte) × 100<br>
+    <strong>Source :</strong> Saisie_controle_Finale.xlsx — detecter par = Assemblage
+  </div>
+  <div class="kr r4">
+    <div class="kc asm"><div class="kl">RFT Assembly</div><div class="kv" id="a-rft">—</div><div class="kt">Objectif : <span id="tl-arft">90%</span></div><div class="kb"><div class="kb-f" id="kb-arft"></div></div></div>
+    <div class="kc amb"><div class="kl">Taux Erreur Assembly</div><div class="kv" id="a-taux">—</div><div class="kt">Objectif ≤ <span id="tl-ataux">10%</span></div></div>
+    <div class="kc asm"><div class="kl">Défauts (Quantité)</div><div class="kv" id="a-def">—</div><div class="kt">pièces non-conformes</div></div>
+    <div class="kc asm"><div class="kl">RFT + Taux Erreur</div><div class="kv good">= 100%</div><div class="kt">Complémentaires ✓</div></div>
+  </div>
+  <div class="cr cr2">
+    <div class="cc">
+      <div class="ctit"><div class="dot" style="background:var(--asm)"></div>RFT Assembly</div>
+      <div class="leg"><div class="li"><div class="ll"></div>Objectif <span id="leg-arft">90%</span></div></div>
+      <div class="cw" style="height:240px"><canvas id="c-asm-rft"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ctit"><div class="dot" style="background:var(--amb)"></div>Taux de Erreur Assembly</div>
+      <div class="leg"><div class="li"><div class="ll"></div>Objectif ≤ <span id="leg-ataux">10%</span></div></div>
+      <div class="cw" style="height:240px"><canvas id="c-asm-taux"></canvas></div>
+    </div>
+  </div>
+  <div class="cr cr1">
+    <div class="cc">
+      <div class="ctit"><div class="dot" style="background:var(--amb)"></div>Défauts Assemblage — valeurs absolues</div>
+      <div class="cw" style="height:200px"><canvas id="c-asm-def"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FINISH GOOD ════════════════════════════════════════════════════════ -->
+<div id="tab-fg" class="sec">
+  <div class="fb"><strong>Finish Good</strong> = SUM(Qte) WHERE prototype IS NULL — Source : 01-Rapport_quantite_MMC.xlsx</div>
+  <div class="kr r4" id="fg-cards"></div>
+  <div class="cr cr1">
+    <div class="cc">
+      <div class="ctit"><div class="dot" style="background:var(--fg)"></div><span id="fg-d-title">Finish Good Journalier</span></div>
+      <div class="cmet" id="fg-d-meta">SUM(Qte) par date — prototype vide</div>
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:var(--fg)"></div>FG pcs/jour</div>
+        <div class="li"><div class="ll"></div>Target <span id="leg-fg">40</span></div>
+        <div class="li"><div class="ll" style="border-color:var(--amb)"></div>Stretch <span id="leg-fgs">45</span></div>
+      </div>
+      <div class="cw" style="height:280px"><canvas id="c-fg-d"></canvas></div>
+    </div>
+  </div>
+  <div class="cr cr2">
+    <div class="cc"><div class="ctit"><div class="dot" style="background:var(--fg)"></div><span id="fg-m-title">FG Mensuel</span></div><div class="cw" style="height:230px"><canvas id="c-fg-m"></canvas></div></div>
+    <div class="cc"><div class="ctit"><div class="dot" style="background:var(--fg)"></div><span id="fg-y-title">FG Annuel</span></div><div class="cw" style="height:230px"><canvas id="c-fg-y"></canvas></div></div>
+  </div>
+</div>
+
+<!-- ══ JOURNALIER ════════════════════════════════════════════════════════ -->
+<div id="tab-daily" class="sec">
+  <div class="note" id="daily-note">📅 Données journalières — utilisez le filtre Mois</div>
+  <div class="kr r3">
+    <div class="kc mmc"><div class="kl">RFT MMC moy.</div><div class="kv" id="d-mmc">—</div></div>
+    <div class="kc cnc"><div class="kl">RFT CNC moy.</div><div class="kv" id="d-cnc">—</div></div>
+    <div class="kc asm"><div class="kl">RFT Assembly moy.</div><div class="kv" id="d-asm">—</div></div>
+  </div>
+  <div class="cr cr1"><div class="cc MAIN"><div class="ctit"><div class="dot" style="background:var(--mmc)"></div>RFT MMC — Journalier</div><div class="cw" style="height:260px"><canvas id="c-d-mmc"></canvas></div></div></div>
+  <div class="cr cr2">
+    <div class="cc"><div class="ctit"><div class="dot" style="background:var(--cnc)"></div>RFT CNC — Journalier</div><div class="cw" style="height:210px"><canvas id="c-d-cnc"></canvas></div></div>
+    <div class="cc"><div class="ctit"><div class="dot" style="background:var(--red)"></div>Taux Erreur CNC — Journalier</div><div class="cw" style="height:210px"><canvas id="c-d-tcnc"></canvas></div></div>
+  </div>
+  <div class="cr cr2">
+    <div class="cc"><div class="ctit"><div class="dot" style="background:var(--asm)"></div>RFT Assembly — Journalier</div><div class="cw" style="height:210px"><canvas id="c-d-asm"></canvas></div></div>
+    <div class="cc"><div class="ctit"><div class="dot" style="background:var(--eff)"></div>Efficacité CNC — Journalier</div><div class="cw" style="height:210px"><canvas id="c-d-eff"></canvas></div></div>
+  </div>
+</div>
+
+<!-- ══ EXTRA ════════════════════════════════════════════════════════════ -->
+<div id="tab-extra" class="sec">
+  <div class="note">📁 Fichiers Excel dans <code style="color:var(--acc)">Data/</code> — import automatique</div>
+  <div id="extra-content"><div class="spinner-wrap"><div class="spinner"></div>Chargement…</div></div>
+</div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// RFT PER PROCESS — pre-computed from Excel files
+// Structure: { "Mois Année": { "Duplication": { total, processes: {CNC,FAO,MONTAGE,CAO} }, "Prototype": {...} } }
+// ═══════════════════════════════════════════════════════════════
+const PROCESS_DATA = {"Jan 2023": {"Duplication": {"total": 94.58, "processes": {"CNC": 96.08, "FAO": 99.19, "MONTAGE": 100.0, "CAO": 99.32}}, "Prototype": {"total": 91.65, "processes": {"CNC": 97.3, "FAO": 96.79, "MONTAGE": 100.0, "CAO": 97.56}}}, "F\u00e9v 2023": {"Duplication": {"total": 97.71, "processes": {"CNC": 98.9, "FAO": 100.0, "MONTAGE": 100.0, "CAO": 98.8}}, "Prototype": {"total": 94.72, "processes": {"CNC": 98.13, "FAO": 98.98, "MONTAGE": 100.0, "CAO": 97.61}}}, "Mar 2023": {"Duplication": {"total": 96.93, "processes": {"CNC": 97.88, "FAO": 99.63, "MONTAGE": 100.0, "CAO": 99.41}}, "Prototype": {"total": 93.28, "processes": {"CNC": 98.16, "FAO": 98.53, "MONTAGE": 100.0, "CAO": 96.6}}}, "Avr 2023": {"Duplication": {"total": 93.09, "processes": {"CNC": 95.67, "FAO": 99.23, "MONTAGE": 100.0, "CAO": 98.19}}, "Prototype": {"total": 91.93, "processes": {"CNC": 96.5, "FAO": 97.47, "MONTAGE": 100.0, "CAO": 97.95}}}, "Mai 2023": {"Duplication": {"total": 95.76, "processes": {"CNC": 96.07, "FAO": 99.93, "MONTAGE": 100.0, "CAO": 99.76}}, "Prototype": {"total": 92.92, "processes": {"CNC": 96.37, "FAO": 99.25, "MONTAGE": 100.0, "CAO": 97.31}}}, "Jun 2023": {"Duplication": {"total": 86.09, "processes": {"CNC": 86.85, "FAO": 99.9, "MONTAGE": 100.0, "CAO": 99.34}}, "Prototype": {"total": 91.36, "processes": {"CNC": 95.3, "FAO": 98.1, "MONTAGE": 100.0, "CAO": 97.95}}}, "Jul 2023": {"Duplication": {"total": 87.32, "processes": {"CNC": 88.99, "FAO": 99.19, "MONTAGE": 100.0, "CAO": 99.15}}, "Prototype": {"total": 90.98, "processes": {"CNC": 93.24, "FAO": 98.39, "MONTAGE": 100.0, "CAO": 99.36}}}, "Ao\u00fb 2023": {"Duplication": {"total": 90.75, "processes": {"CNC": 91.52, "FAO": 99.91, "MONTAGE": 100.0, "CAO": 99.32}}, "Prototype": {"total": 91.31, "processes": {"CNC": 93.95, "FAO": 98.93, "MONTAGE": 100.0, "CAO": 98.44}}}, "Sep 2023": {"Duplication": {"total": 95.79, "processes": {"CNC": 96.98, "FAO": 99.47, "MONTAGE": 100.0, "CAO": 99.35}}, "Prototype": {"total": 93.88, "processes": {"CNC": 96.88, "FAO": 98.88, "MONTAGE": 100.0, "CAO": 98.13}}}, "Oct 2023": {"Duplication": {"total": 95.57, "processes": {"CNC": 96.06, "FAO": 99.88, "MONTAGE": 100.0, "CAO": 99.63}}, "Prototype": {"total": 93.54, "processes": {"CNC": 95.98, "FAO": 99.02, "MONTAGE": 100.0, "CAO": 98.53}}}, "Nov 2023": {"Duplication": {"total": 95.8, "processes": {"CNC": 97.04, "FAO": 99.14, "MONTAGE": 100.0, "CAO": 99.61}}, "Prototype": {"total": 92.74, "processes": {"CNC": 97.48, "FAO": 98.59, "MONTAGE": 100.0, "CAO": 96.67}}}, "D\u00e9c 2023": {"Duplication": {"total": 98.64, "processes": {"CNC": 99.22, "FAO": 99.51, "MONTAGE": 100.0, "CAO": 99.9}}, "Prototype": {"total": 94.85, "processes": {"CNC": 98.1, "FAO": 97.02, "MONTAGE": 100.0, "CAO": 99.73}}}, "Jan 2024": {"Duplication": {"total": 94.05, "processes": {"CNC": 94.41, "FAO": 99.76, "MONTAGE": 100.0, "CAO": 99.88}}, "Prototype": {"total": 90.5, "processes": {"CNC": 95.68, "FAO": 97.41, "MONTAGE": 100.0, "CAO": 97.41}}}, "F\u00e9v 2024": {"Duplication": {"total": 97.97, "processes": {"CNC": 98.29, "FAO": 99.95, "MONTAGE": 100.0, "CAO": 99.74}}, "Prototype": {"total": 91.15, "processes": {"CNC": 96.34, "FAO": 96.49, "MONTAGE": 100.0, "CAO": 98.32}}}, "Mar 2024": {"Duplication": {"total": 93.89, "processes": {"CNC": 93.94, "FAO": 100.0, "MONTAGE": 100.0, "CAO": 99.95}}, "Prototype": {"total": 88.58, "processes": {"CNC": 92.66, "FAO": 97.88, "MONTAGE": 100.0, "CAO": 98.04}}}, "Avr 2024": {"Duplication": {"total": 95.6, "processes": {"CNC": 96.43, "FAO": 99.6, "MONTAGE": 100.0, "CAO": 99.56}}, "Prototype": {"total": 90.97, "processes": {"CNC": 94.95, "FAO": 98.56, "MONTAGE": 100.0, "CAO": 97.47}}}, "Mai 2024": {"Duplication": {"total": 92.49, "processes": {"CNC": 93.16, "FAO": 99.62, "MONTAGE": 100.0, "CAO": 99.71}}, "Prototype": {"total": 89.07, "processes": {"CNC": 94.9, "FAO": 97.52, "MONTAGE": 100.0, "CAO": 96.65}}}, "Jun 2024": {"Duplication": {"total": 90.42, "processes": {"CNC": 91.1, "FAO": 99.55, "MONTAGE": 100.0, "CAO": 99.77}}, "Prototype": {"total": 87.98, "processes": {"CNC": 93.99, "FAO": 98.15, "MONTAGE": 100.0, "CAO": 95.84}}}, "Jul 2024": {"Duplication": {"total": 90.11, "processes": {"CNC": 90.52, "FAO": 99.59, "MONTAGE": 100.0, "CAO": 100.0}}, "Prototype": {"total": 90.27, "processes": {"CNC": 94.0, "FAO": 97.54, "MONTAGE": 100.0, "CAO": 98.72}}}, "Ao\u00fb 2024": {"Duplication": {"total": 83.48, "processes": {"CNC": 83.82, "FAO": 99.74, "MONTAGE": 100.0, "CAO": 99.92}}, "Prototype": {"total": 89.01, "processes": {"CNC": 94.34, "FAO": 97.85, "MONTAGE": 100.0, "CAO": 96.83}}}, "Sep 2024": {"Duplication": {"total": 89.35, "processes": {"CNC": 90.18, "FAO": 99.37, "MONTAGE": 100.0, "CAO": 99.8}}, "Prototype": {"total": 87.37, "processes": {"CNC": 91.98, "FAO": 98.01, "MONTAGE": 100.0, "CAO": 97.38}}}, "Oct 2024": {"Duplication": {"total": 84.66, "processes": {"CNC": 85.48, "FAO": 99.52, "MONTAGE": 100.0, "CAO": 99.65}}, "Prototype": {"total": 86.05, "processes": {"CNC": 91.78, "FAO": 97.52, "MONTAGE": 100.0, "CAO": 96.74}}}, "Nov 2024": {"Duplication": {"total": 91.14, "processes": {"CNC": 91.65, "FAO": 99.54, "MONTAGE": 100.0, "CAO": 99.95}}, "Prototype": {"total": 88.01, "processes": {"CNC": 93.93, "FAO": 96.36, "MONTAGE": 100.0, "CAO": 97.72}}}, "D\u00e9c 2024": {"Duplication": {"total": 96.42, "processes": {"CNC": 96.42, "FAO": 100.0, "MONTAGE": 100.0, "CAO": 100.0}}, "Prototype": {"total": 87.59, "processes": {"CNC": 91.03, "FAO": 98.62, "MONTAGE": 100.0, "CAO": 97.93}}}, "Jan 2025": {"Duplication": {"total": 95.15, "processes": {"CNC": 95.83, "FAO": 99.61, "MONTAGE": 100.0, "CAO": 99.71}}, "Prototype": {"total": 91.39, "processes": {"CNC": 94.67, "FAO": 98.16, "MONTAGE": 100.0, "CAO": 98.57}}}, "F\u00e9v 2025": {"Duplication": {"total": 97.62, "processes": {"CNC": 97.9, "FAO": 99.79, "MONTAGE": 100.0, "CAO": 99.93}}, "Prototype": {"total": 94.31, "processes": {"CNC": 95.79, "FAO": 99.01, "MONTAGE": 100.0, "CAO": 99.5}}}, "Mar 2025": {"Duplication": {"total": 96.21, "processes": {"CNC": 96.4, "FAO": 99.81, "MONTAGE": 100.0, "CAO": 100.0}}, "Prototype": {"total": 91.34, "processes": {"CNC": 95.54, "FAO": 98.56, "MONTAGE": 100.0, "CAO": 97.24}}}, "Avr 2025": {"Duplication": {"total": 97.53, "processes": {"CNC": 97.88, "FAO": 99.8, "MONTAGE": 100.0, "CAO": 99.85}}, "Prototype": {"total": 92.69, "processes": {"CNC": 95.74, "FAO": 98.9, "MONTAGE": 100.0, "CAO": 98.05}}}, "Mai 2025": {"Duplication": {"total": 97.57, "processes": {"CNC": 98.35, "FAO": 99.22, "MONTAGE": 100.0, "CAO": 100.0}}, "Prototype": {"total": 91.88, "processes": {"CNC": 96.08, "FAO": 97.56, "MONTAGE": 100.0, "CAO": 98.24}}}, "Jun 2025": {"Duplication": {"total": 94.02, "processes": {"CNC": 94.02, "FAO": 100.0, "MONTAGE": 100.0, "CAO": 100.0}}, "Prototype": {"total": 91.81, "processes": {"CNC": 95.66, "FAO": 98.31, "MONTAGE": 100.0, "CAO": 97.83}}}, "Jul 2025": {"Duplication": {"total": 95.37, "processes": {"CNC": 95.37, "FAO": 100.0, "MONTAGE": 100.0, "CAO": 100.0}}, "Prototype": {"total": 89.92, "processes": {"CNC": 94.96, "FAO": 97.98, "MONTAGE": 100.0, "CAO": 96.98}}}, "Ao\u00fb 2025": {"Duplication": {"total": 96.24, "processes": {"CNC": 96.44, "FAO": 99.94, "MONTAGE": 100.0, "CAO": 99.86}}, "Prototype": {"total": 90.19, "processes": {"CNC": 95.64, "FAO": 96.73, "MONTAGE": 100.0, "CAO": 97.82}}}, "Sep 2025": {"Duplication": {"total": 95.18, "processes": {"CNC": 95.47, "FAO": 99.71, "MONTAGE": 100.0, "CAO": 100.0}}, "Prototype": {"total": 90.04, "processes": {"CNC": 95.7, "FAO": 96.68, "MONTAGE": 100.0, "CAO": 97.66}}}, "Oct 2025": {"Duplication": {"total": 96.84, "processes": {"CNC": 97.73, "FAO": 99.12, "MONTAGE": 100.0, "CAO": 100.0}}, "Prototype": {"total": 88.59, "processes": {"CNC": 95.64, "FAO": 95.44, "MONTAGE": 100.0, "CAO": 97.51}}}, "Nov 2025": {"Duplication": {"total": 94.6, "processes": {"CNC": 95.28, "FAO": 99.56, "MONTAGE": 100.0, "CAO": 99.76}}, "Prototype": {"total": 89.86, "processes": {"CNC": 96.85, "FAO": 96.17, "MONTAGE": 100.0, "CAO": 96.85}}}, "D\u00e9c 2025": {"Duplication": {"total": 96.21, "processes": {"CNC": 96.35, "FAO": 100.0, "MONTAGE": 100.0, "CAO": 99.86}}, "Prototype": {"total": 90.02, "processes": {"CNC": 95.38, "FAO": 98.3, "MONTAGE": 100.0, "CAO": 96.35}}}, "Jan 2026": {"Duplication": {"total": 95.23, "processes": {"CNC": 96.46, "FAO": 99.14, "MONTAGE": 100.0, "CAO": 99.63}}, "Prototype": {"total": 85.63, "processes": {"CNC": 94.25, "FAO": 95.02, "MONTAGE": 100.0, "CAO": 96.36}}}, "F\u00e9v 2026": {"Duplication": {"total": 96.05, "processes": {"CNC": 96.8, "FAO": 99.31, "MONTAGE": 100.0, "CAO": 99.93}}, "Prototype": {"total": 89.24, "processes": {"CNC": 95.06, "FAO": 96.47, "MONTAGE": 100.0, "CAO": 97.71}}}, "Mar 2026": {"Duplication": {"total": 98.03, "processes": {"CNC": 98.3, "FAO": 99.74, "MONTAGE": 100.0, "CAO": 100.0}}, "Prototype": {"total": 89.66, "processes": {"CNC": 95.46, "FAO": 97.1, "MONTAGE": 100.0, "CAO": 97.1}}}, "Avr 2026": {"Duplication": {"total": 98.07, "processes": {"CNC": 98.25, "FAO": 99.88, "MONTAGE": 100.0, "CAO": 99.94}}, "Prototype": {"total": 94.66, "processes": {"CNC": 97.21, "FAO": 98.19, "MONTAGE": 100.0, "CAO": 99.26}}}, "Mai 2026": {"Duplication": {"total": 97.6, "processes": {"CNC": 97.66, "FAO": 99.94, "MONTAGE": 100.0, "CAO": 100.0}}, "Prototype": {"total": 92.1, "processes": {"CNC": 96.56, "FAO": 97.59, "MONTAGE": 100.0, "CAO": 97.94}}}};
+
+// ═══════════════════════════════════════════════════════════════
+// RAW DATA
+// ═══════════════════════════════════════════════════════════════
+const RAW=[
+  // ── Jan 2026 ────────────────────────────────────────
+  {d:'05/01',m:1,y:2026,qte:34,cnc_def:6,cnc_pcs:162,asm_def:3,fg:30},
+  {d:'06/01',m:1,y:2026,qte:19,cnc_def:15,cnc_pcs:292,asm_def:3,fg:15},
+  {d:'07/01',m:1,y:2026,qte:21,cnc_def:14,cnc_pcs:211,asm_def:2,fg:15},
+  {d:'08/01',m:1,y:2026,qte:21,cnc_def:9,cnc_pcs:113,asm_def:1,fg:17},
+  {d:'09/01',m:1,y:2026,qte:25,cnc_def:12,cnc_pcs:143,asm_def:7,fg:21},
+  {d:'12/01',m:1,y:2026,qte:35,cnc_def:19,cnc_pcs:145,asm_def:3,fg:31},
+  {d:'13/01',m:1,y:2026,qte:35,cnc_def:15,cnc_pcs:220,asm_def:4,fg:29},
+  {d:'14/01',m:1,y:2026,qte:48,cnc_def:19,cnc_pcs:174,asm_def:6,fg:43},
+  {d:'15/01',m:1,y:2026,qte:36,cnc_def:6,cnc_pcs:179,asm_def:3,fg:30},
+  {d:'16/01',m:1,y:2026,qte:45,cnc_def:18,cnc_pcs:152,asm_def:6,fg:40},
+  {d:'19/01',m:1,y:2026,qte:40,cnc_def:4,cnc_pcs:118,asm_def:2,fg:33},
+  {d:'20/01',m:1,y:2026,qte:40,cnc_def:1,cnc_pcs:13,asm_def:3,fg:35},
+  {d:'21/01',m:1,y:2026,qte:30,cnc_def:9,cnc_pcs:139,asm_def:3,fg:26},
+  {d:'22/01',m:1,y:2026,qte:44,cnc_def:3,cnc_pcs:135,asm_def:5,fg:39},
+  {d:'23/01',m:1,y:2026,qte:38,cnc_def:8,cnc_pcs:151,asm_def:4,fg:34},
+  {d:'26/01',m:1,y:2026,qte:36,cnc_def:12,cnc_pcs:211,asm_def:2,fg:28},
+  {d:'27/01',m:1,y:2026,qte:42,cnc_def:11,cnc_pcs:162,asm_def:5,fg:38},
+  {d:'28/01',m:1,y:2026,qte:34,cnc_def:15,cnc_pcs:148,asm_def:6,fg:32},
+  {d:'29/01',m:1,y:2026,qte:36,cnc_def:4,cnc_pcs:149,asm_def:2,fg:31},
+  {d:'30/01',m:1,y:2026,qte:46,cnc_def:3,cnc_pcs:189,asm_def:6,fg:44},
+  // ── Fév 2026 ────────────────────────────────────────
+  {d:'02/02',m:2,y:2026,qte:27,cnc_def:5,cnc_pcs:213,asm_def:1,fg:18},
+  {d:'03/02',m:2,y:2026,qte:31,cnc_def:9,cnc_pcs:210,asm_def:4,fg:24},
+  {d:'04/02',m:2,y:2026,qte:26,cnc_def:16,cnc_pcs:135,asm_def:3,fg:20},
+  {d:'05/02',m:2,y:2026,qte:33,cnc_def:10,cnc_pcs:244,asm_def:0,fg:26},
+  {d:'06/02',m:2,y:2026,qte:38,cnc_def:8,cnc_pcs:130,asm_def:6,fg:34},
+  {d:'09/02',m:2,y:2026,qte:25,cnc_def:9,cnc_pcs:132,asm_def:1,fg:17},
+  {d:'10/02',m:2,y:2026,qte:11,cnc_def:9,cnc_pcs:131,asm_def:4,fg:8},
+  {d:'11/02',m:2,y:2026,qte:34,cnc_def:5,cnc_pcs:222,asm_def:4,fg:29},
+  {d:'12/02',m:2,y:2026,qte:29,cnc_def:6,cnc_pcs:190,asm_def:4,fg:24},
+  {d:'13/02',m:2,y:2026,qte:44,cnc_def:4,cnc_pcs:136,asm_def:3,fg:39},
+  {d:'16/02',m:2,y:2026,qte:41,cnc_def:26,cnc_pcs:213,asm_def:4,fg:37},
+  {d:'17/02',m:2,y:2026,qte:34,cnc_def:15,cnc_pcs:194,asm_def:7,fg:30},
+  {d:'18/02',m:2,y:2026,qte:41,cnc_def:9,cnc_pcs:181,asm_def:3,fg:34},
+  {d:'19/02',m:2,y:2026,qte:47,cnc_def:7,cnc_pcs:197,asm_def:5,fg:41},
+  {d:'20/02',m:2,y:2026,qte:43,cnc_def:8,cnc_pcs:173,asm_def:3,fg:38},
+  {d:'23/02',m:2,y:2026,qte:43,cnc_def:6,cnc_pcs:167,asm_def:5,fg:38},
+  {d:'24/02',m:2,y:2026,qte:54,cnc_def:9,cnc_pcs:148,asm_def:3,fg:47},
+  {d:'25/02',m:2,y:2026,qte:58,cnc_def:3,cnc_pcs:174,asm_def:2,fg:55},
+  {d:'26/02',m:2,y:2026,qte:49,cnc_def:6,cnc_pcs:144,asm_def:4,fg:46},
+  {d:'27/02',m:2,y:2026,qte:52,cnc_def:6,cnc_pcs:142,asm_def:2,fg:47},
+  // ── Mar 2026 ────────────────────────────────────────
+  {d:'02/03',m:3,y:2026,qte:35,cnc_def:7,cnc_pcs:188,asm_def:2,fg:30},
+  {d:'03/03',m:3,y:2026,qte:39,cnc_def:6,cnc_pcs:199,asm_def:5,fg:32},
+  {d:'04/03',m:3,y:2026,qte:32,cnc_def:10,cnc_pcs:170,asm_def:5,fg:27},
+  {d:'05/03',m:3,y:2026,qte:42,cnc_def:6,cnc_pcs:125,asm_def:2,fg:39},
+  {d:'06/03',m:3,y:2026,qte:43,cnc_def:9,cnc_pcs:185,asm_def:2,fg:39},
+  {d:'09/03',m:3,y:2026,qte:41,cnc_def:2,cnc_pcs:74,asm_def:2,fg:36},
+  {d:'10/03',m:3,y:2026,qte:35,cnc_def:10,cnc_pcs:385,asm_def:1,fg:30},
+  {d:'11/03',m:3,y:2026,qte:44,cnc_def:1,cnc_pcs:191,asm_def:41,fg:43},
+  {d:'12/03',m:3,y:2026,qte:82,cnc_def:5,cnc_pcs:195,asm_def:20,fg:78},
+  {d:'13/03',m:3,y:2026,qte:61,cnc_def:10,cnc_pcs:184,asm_def:9,fg:56},
+  {d:'16/03',m:3,y:2026,qte:53,cnc_def:10,cnc_pcs:173,asm_def:0,fg:51},
+  {d:'17/03',m:3,y:2026,qte:52,cnc_def:5,cnc_pcs:255,asm_def:3,fg:47},
+  {d:'18/03',m:3,y:2026,qte:43,cnc_def:3,cnc_pcs:165,asm_def:3,fg:37},
+  {d:'23/03',m:3,y:2026,qte:64,cnc_def:10,cnc_pcs:198,asm_def:2,fg:57},
+  {d:'24/03',m:3,y:2026,qte:45,cnc_def:7,cnc_pcs:231,asm_def:8,fg:41},
+  {d:'25/03',m:3,y:2026,qte:43,cnc_def:6,cnc_pcs:165,asm_def:0,fg:41},
+  {d:'26/03',m:3,y:2026,qte:37,cnc_def:3,cnc_pcs:294,asm_def:5,fg:30},
+  {d:'27/03',m:3,y:2026,qte:28,cnc_def:5,cnc_pcs:175,asm_def:6,fg:25},
+  {d:'30/03',m:3,y:2026,qte:49,cnc_def:4,cnc_pcs:169,asm_def:2,fg:41},
+  {d:'31/03',m:3,y:2026,qte:61,cnc_def:5,cnc_pcs:237,asm_def:3,fg:57},
+  // ── Avr 2026 ────────────────────────────────────────
+  {d:'01/04',m:4,y:2026,qte:45,cnc_def:6,cnc_pcs:205,asm_def:2,fg:42},
+  {d:'02/04',m:4,y:2026,qte:61,cnc_def:2,cnc_pcs:242,asm_def:0,fg:57},
+  {d:'03/04',m:4,y:2026,qte:28,cnc_def:3,cnc_pcs:209,asm_def:3,fg:25},
+  {d:'06/04',m:4,y:2026,qte:60,cnc_def:9,cnc_pcs:206,asm_def:3,fg:57},
+  {d:'07/04',m:4,y:2026,qte:31,cnc_def:6,cnc_pcs:273,asm_def:8,fg:29},
+  {d:'08/04',m:4,y:2026,qte:46,cnc_def:6,cnc_pcs:214,asm_def:5,fg:45},
+  {d:'09/04',m:4,y:2026,qte:45,cnc_def:3,cnc_pcs:213,asm_def:0,fg:30},
+  {d:'10/04',m:4,y:2026,qte:46,cnc_def:2,cnc_pcs:222,asm_def:3,fg:43},
+  {d:'13/04',m:4,y:2026,qte:31,cnc_def:3,cnc_pcs:295,asm_def:14,fg:26},
+  {d:'14/04',m:4,y:2026,qte:38,cnc_def:6,cnc_pcs:251,asm_def:7,fg:26},
+  {d:'15/04',m:4,y:2026,qte:45,cnc_def:7,cnc_pcs:226,asm_def:5,fg:39},
+  {d:'16/04',m:4,y:2026,qte:27,cnc_def:4,cnc_pcs:186,asm_def:1,fg:14},
+  {d:'17/04',m:4,y:2026,qte:47,cnc_def:6,cnc_pcs:180,asm_def:5,fg:33},
+  {d:'20/04',m:4,y:2026,qte:78,cnc_def:7,cnc_pcs:211,asm_def:3,fg:69},
+  {d:'21/04',m:4,y:2026,qte:33,cnc_def:8,cnc_pcs:202,asm_def:3,fg:22},
+  {d:'22/04',m:4,y:2026,qte:53,cnc_def:4,cnc_pcs:200,asm_def:1,fg:40},
+  {d:'23/04',m:4,y:2026,qte:27,cnc_def:5,cnc_pcs:180,asm_def:5,fg:22},
+  {d:'24/04',m:4,y:2026,qte:48,cnc_def:14,cnc_pcs:211,asm_def:2,fg:36},
+  {d:'27/04',m:4,y:2026,qte:49,cnc_def:5,cnc_pcs:147,asm_def:7,fg:36},
+  {d:'28/04',m:4,y:2026,qte:34,cnc_def:8,cnc_pcs:169,asm_def:1,fg:24},
+  {d:'29/04',m:4,y:2026,qte:42,cnc_def:8,cnc_pcs:167,asm_def:3,fg:20},
+  {d:'30/04',m:4,y:2026,qte:47,cnc_def:8,cnc_pcs:170,asm_def:1,fg:35},
+  // ── Mai 2026 ────────────────────────────────────────
+  {d:'04/05',m:5,y:2026,qte:48,cnc_def:7,cnc_pcs:203,asm_def:2,fg:31},
+  {d:'05/05',m:5,y:2026,qte:37,cnc_def:5,cnc_pcs:184,asm_def:2,fg:20},
+  {d:'06/05',m:5,y:2026,qte:54,cnc_def:3,cnc_pcs:191,asm_def:1,fg:50},
+  {d:'07/05',m:5,y:2026,qte:39,cnc_def:5,cnc_pcs:179,asm_def:0,fg:31},
+  {d:'08/05',m:5,y:2026,qte:48,cnc_def:6,cnc_pcs:220,asm_def:2,fg:41},
+  {d:'11/05',m:5,y:2026,qte:60,cnc_def:0,cnc_pcs:0,asm_def:5,fg:53},
+  {d:'12/05',m:5,y:2026,qte:34,cnc_def:10,cnc_pcs:191,asm_def:2,fg:31},
+  {d:'13/05',m:5,y:2026,qte:30,cnc_def:7,cnc_pcs:183,asm_def:1,fg:18},
+  {d:'14/05',m:5,y:2026,qte:44,cnc_def:10,cnc_pcs:239,asm_def:3,fg:40},
+  {d:'15/05',m:5,y:2026,qte:39,cnc_def:6,cnc_pcs:206,asm_def:1,fg:34},
+  {d:'18/05',m:5,y:2026,qte:4,cnc_def:2,cnc_pcs:79,asm_def:0,fg:2},
+  // ── ADD NEW DAYS/MONTHS HERE — system auto-discovers them
+];
+
+// ═══════════════════════════════════════════════════════════════
+// KPI COMPUTATION
+// ═══════════════════════════════════════════════════════════════
+const p2=(n,d)=>d>0?Math.round(n/d*10000)/100:null;
+function clamp(v, lo, hi) {
+  return v === null ? null : Math.max(lo, Math.min(hi, v));
+}
+RAW.forEach(r=>{
+  r.rft_cnc  = clamp(p2(r.qte-r.cnc_def, r.qte), 0, 100);
+  r.taux_cnc = clamp(p2(r.cnc_def, r.qte), 0, 100);
+  r.eff_cnc  = r.cnc_pcs>0 ? clamp(p2(r.cnc_pcs-r.cnc_def, r.cnc_pcs), 0, 100) : null;
+  r.rft_asm  = clamp(p2(r.qte-r.asm_def, r.qte), 0, 100);
+  r.taux_asm = clamp(p2(r.asm_def, r.qte), 0, 100);
+  r.taux_mmc = clamp(p2(r.cnc_def+r.asm_def, r.qte), 0, 100);
+  r.rft_mmc  = r.taux_mmc !== null ? Math.round((100 - r.taux_mmc) * 10) / 10 : null;
+});
+
+const ALL_YEARS=[...new Set(RAW.map(r=>r.y))].sort();
+const MO=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+
+function buildMonthly(){
+  const agg={};
+  RAW.forEach(r=>{
+    const k=`${r.y}-${String(r.m).padStart(2,'0')}`;
+    if(!agg[k]) agg[k]={y:r.y,m:r.m,lbl:MO[r.m-1]+' '+r.y,qte:0,cnc_def:0,cnc_pcs:0,asm_def:0,fg:0};
+    const g=agg[k];
+    g.qte+=r.qte;g.cnc_def+=r.cnc_def;g.cnc_pcs+=r.cnc_pcs;g.asm_def+=r.asm_def;g.fg+=r.fg;
+  });
+  return Object.entries(agg).sort(([a],[b])=>a.localeCompare(b)).map(([,v])=>{
+    v.rft_cnc=clamp(p2(v.qte-v.cnc_def,v.qte),0,100); v.taux_cnc=clamp(p2(v.cnc_def,v.qte),0,100);
+    v.eff_cnc=v.cnc_pcs>0?p2(v.cnc_pcs-v.cnc_def,v.cnc_pcs):null;
+    v.rft_asm=p2(v.qte-v.asm_def,v.qte); v.taux_asm=p2(v.asm_def,v.qte);
+    v.taux_mmc=clamp(p2(v.cnc_def+v.asm_def,v.qte),0,100);
+    v.rft_mmc=v.taux_mmc!==null?Math.round((100-v.taux_mmc)*10)/10:null;
+    return v;
+  });
+}
+function buildYearly(){
+  const agg={};
+  RAW.forEach(r=>{
+    if(!agg[r.y])agg[r.y]={y:r.y,lbl:String(r.y),qte:0,cnc_def:0,cnc_pcs:0,asm_def:0,fg:0};
+    const g=agg[r.y];g.qte+=r.qte;g.cnc_def+=r.cnc_def;g.cnc_pcs+=r.cnc_pcs;g.asm_def+=r.asm_def;g.fg+=r.fg;
+  });
+  return Object.values(agg).sort((a,b)=>a.y-b.y).map(v=>{
+    v.rft_cnc=clamp(p2(v.qte-v.cnc_def,v.qte),0,100); v.taux_cnc=clamp(p2(v.cnc_def,v.qte),0,100);
+    v.eff_cnc=v.cnc_pcs>0?p2(v.cnc_pcs-v.cnc_def,v.cnc_pcs):null;
+    v.rft_asm=p2(v.qte-v.asm_def,v.qte); v.taux_asm=p2(v.asm_def,v.qte);
+    v.taux_mmc=clamp(p2(v.cnc_def+v.asm_def,v.qte),0,100);
+    v.rft_mmc=v.taux_mmc!==null?Math.round((100-v.taux_mmc)*10)/10:null;
+    return v;
+  });
+}
+
+const PARETO=[
+  {d:'Poche < tolérance',    n:1432, a:'Reprise usinage / Contrôle programme'},
+  {d:'Perçage + tolérance',  n:799,  a:'Vérification outil + rectification H7'},
+  {d:'Cote - tolérance',     n:720,  a:'Contrôle cote + reprise opération'},
+  {d:'Manque opération',     n:693,  a:'Réusinage complet + QRQC ouvert'},
+  {d:'Profondeur NC',        n:640,  a:'Vérification profondeur + retouche M2.5'},
+  {d:'Cote + tolérance',     n:549,  a:'Rebut + contrôle programme CNC'},
+  {d:'Perçage - tolérance',  n:514,  a:'Correction programme + bavurage'},
+  {d:'Pièce endommagée',     n:471,  a:'Rebut + analyse cause racine'},
+  {d:'Modification NC',      n:362,  a:'Mise à jour gamme + retraitement'},
+  {d:'Perçage décalé',       n:352,  a:'Vérification bridage + reprise'},
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE — all `var` to avoid TDZ errors (hoisted safely)
+// ═══════════════════════════════════════════════════════════════
+var period='yearly', selYear=2026, selMonth=1;
+var charts={};
+var notifs=[]; // auto-generated from real KPI data
+var USERS=[{u:'admin',p:'admin123'}];
+var user=null;
+
+// ── TARGETS: loaded from localStorage, with defaults
+var TARGET_DEFAULTS={rfm:80,tmmc:20,rfc:94,tec:6,rfa:90,tea:10,eff:94,rfd:94,rfp:85,fg:40,fgs:45,fgi:35};
+var T = {}; // populated after loadTargets() is defined (see below)
+
+function loadTargets(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('mmc_kpi_targets')||'{}');
+    return Object.assign({},TARGET_DEFAULTS,saved);
+  }catch{return Object.assign({},TARGET_DEFAULTS);}
+}
+T = loadTargets(); // now safe — function is defined above
+
+function saveTargets(){
+  try{ localStorage.setItem('mmc_kpi_targets',JSON.stringify(T)); }catch{}
+}
+
+// ═══════════════════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════════════════
+let isDark=true;
+function toggleTheme(){
+  isDark=!isDark;
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  gel('theme-btn').textContent=isDark?'🌙 Sombre':'☀️ Clair';
+  Chart.defaults.color=isDark?'#4a5568':'#4a6080';
+  rebuildAll();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UTILS — use function declarations (fully hoisted, no TDZ)
+// ═══════════════════════════════════════════════════════════════
+function gel(id){ return document.getElementById(id); }
+function se(id,txt,cls){const e=gel(id);if(!e)return;e.textContent=txt;if(cls)e.className='kv '+cls;}
+function cls(v,t,inv=false){
+  if(v===null||v===undefined)return'neutral';
+  return(inv?v<=t:v>=t)?'good':(Math.abs(v-t)<t*.15?'warn':'bad');
+}
+function avg(arr){const v=arr.filter(x=>x!==null&&!isNaN(x));return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length*10)/10:0;}
+function toast(msg,col='var(--grn)'){
+  const t=gel('toast');t.textContent=msg;t.style.borderColor=col;t.style.color=col;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);
+}
+function openOv(id){gel(id).classList.add('open');}
+function closeOv(id){gel(id).classList.remove('open');}
+document.addEventListener('click',e=>{
+  ['ov-tgt'].forEach(id=>{if(gel(id).classList.contains('open')&&e.target===gel(id))closeOv(id);});
+  if(gel('np').classList.contains('open')&&!gel('np').contains(e.target)&&!e.target.closest('.nbw'))gel('np').classList.remove('open');
+});
+
+// ═══════════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════════
+function doLogin(){
+  const u=gel('lu').value.trim(),p=gel('lp').value.trim();
+  if(!USERS.find(x=>x.u===u&&x.p===p)){gel('lerr').style.display='block';return;}
+  gel('lerr').style.display='none';user={u};closeOv('ov-login');launch();
+}
+function doReg(){
+  const u=gel('ru').value.trim(),p=gel('rp').value.trim(),p2=gel('rp2').value.trim(),err=gel('rerr');
+  if(!u||!p){err.textContent='Champs requis.';err.style.display='block';return;}
+  if(p!==p2){err.textContent='Mots de passe différents.';err.style.display='block';return;}
+  USERS.push({u,p});user={u};closeOv('ov-reg');launch();
+}
+function sw(to){['ov-login','ov-reg'].forEach(id=>gel(id).classList[id===to?'add':'remove']('open'));}
+gel('lp').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+function launch(){
+  gel('hun').textContent=user.u;gel('hav').textContent=user.u[0].toUpperCase();
+  buildYearChips();buildMonthChips();updTgtLbls();updTgtInputs();buildAll();mkNotifs();
+  // timer already running from DOMContentLoaded
+}
+
+// Flask auto-launch
+if(window.location.protocol!=='file:'){
+  user={u:'manager'};
+  buildYearChips();buildMonthChips();updTgtLbls();updTgtInputs();buildAll();mkNotifs();
+  // timer starts via DOMContentLoaded at bottom of script
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TARGETS — editable, persisted via localStorage
+// ═══════════════════════════════════════════════════════════════
+function openTgt(){
+  updTgtInputs();
+  openOv('ov-tgt');
+}
+function updTgtInputs(){
+  // Fill all input fields with current target values
+  const map={rfm:'t-rfm',tmmc:'t-tmmc',rfc:'t-rfc',tec:'t-tec',rfa:'t-rfa',tea:'t-tea',eff:'t-eff',rfd:'t-rfd',rfp:'t-rfp',fg:'t-fg',fgs:'t-fgs',fgi:'t-fgi'};
+  Object.entries(map).forEach(([key,inputId])=>{
+    const el=gel(inputId);
+    if(el) el.value=T[key];
+  });
+}
+function saveTgt(){
+  const map={rfm:'t-rfm',tmmc:'t-tmmc',rfc:'t-rfc',tec:'t-tec',rfa:'t-rfa',tea:'t-tea',eff:'t-eff',rfd:'t-rfd',rfp:'t-rfp',fg:'t-fg',fgs:'t-fgs',fgi:'t-fgi'};
+  Object.entries(map).forEach(([key,inputId])=>{
+    const el=gel(inputId);
+    if(el&&el.value!=='') T[key]=parseFloat(el.value)||TARGET_DEFAULTS[key];
+  });
+  saveTargets(); // persist to localStorage
+  closeOv('ov-tgt');
+  updTgtLbls();
+  rebuildAll(); // rebuild charts with new targets
+  toast('✓ Objectifs sauvegardés — graphiques mis à jour');
+}
+function updTgtLbls(){
+  const s=(id,v,sfx='%')=>{const e=gel(id);if(e)e.textContent=v+sfx;};
+  s('tl-mmc',T.rfm);s('tl-cnc',T.rfc);s('tl-asm',T.rfa);s('tl-tmmc',T.tmmc);
+  s('tl-crft',T.rfc);s('tl-ctaux',T.tec);s('tl-eff',T.eff);
+  s('tl-arft',T.rfa);s('tl-ataux',T.tea);
+  s('leg-mmc',T.rfm);s('leg-cnc',T.rfc);s('leg-asm',T.rfa);s('leg-tmmc',T.tmmc);
+  s('leg-crft',T.rfc);s('leg-ctaux',T.tec);s('leg-eff',T.eff);
+  s('leg-arft',T.rfa);s('leg-ataux',T.tea);
+  s('leg-fg',T.fg,' pcs');s('leg-fgs',T.fgs,' pcs');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// NOTIFICATION ENGINE — generates real alerts from KPI data
+// Called after every buildAll(). Types: r=red, a=amber, g=green
+// ═══════════════════════════════════════════════════════════════
+function generateNotifs(){
+  var newNotifs=[];
+  var now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  var per=period==='yearly'?'Annuel':period==='monthly'?(MO[selMonth-1]+' '+selYear):(MO[selMonth-1]+' '+selYear);
+
+  function add(type,msg){ newNotifs.push({t:type,m:msg,ts:now}); }
+
+  // Get current period data
+  var rows=getRows().rows;
+  if(!rows||!rows.length){ notifs=[]; mkNotifs(); return; }
+
+  function avg(fn){
+    var vals=rows.map(fn).filter(function(v){return v!==null&&!isNaN(v);});
+    return vals.length?Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length*10)/10:null;
+  }
+  function sm(fn){return rows.reduce(function(s,r){return s+(fn(r)||0);},0);}
+
+  var aMMC  = avg(function(r){return r.rft_mmc;});
+  var aCNC  = avg(function(r){return r.rft_cnc;});
+  var aASM  = avg(function(r){return r.rft_asm;});
+  var aTMMC = avg(function(r){return r.taux_mmc;});
+  var aTCNC = avg(function(r){return r.taux_cnc;});
+  var aEff  = avg(function(r){return r.eff_cnc;});
+  var totalFG  = sm(function(r){return r.fg;});
+  var totalDef = sm(function(r){return r.cnc_def+r.asm_def;});
+
+  // ── RFT MMC ─────────────────────────────────────────────────
+  if(aMMC!==null){
+    if(aMMC < T.rfm-10)      add('r','🔴 RFT MMC critique : '+aMMC+'% — objectif '+T.rfm+'% (écart '+(T.rfm-aMMC).toFixed(1)+'%) · '+per);
+    else if(aMMC < T.rfm)    add('a','🟡 RFT MMC sous objectif : '+aMMC+'% / '+T.rfm+'% · '+per);
+    else                     add('g','✅ RFT MMC atteint : '+aMMC+'% ≥ '+T.rfm+'% · '+per);
+  }
+
+  // ── RFT CNC ─────────────────────────────────────────────────
+  if(aCNC!==null){
+    if(aCNC < T.rfc-5)       add('r','🔴 RFT CNC critique : '+aCNC+'% — objectif '+T.rfc+'% · '+per);
+    else if(aCNC < T.rfc)    add('a','🟡 RFT CNC sous objectif : '+aCNC+'% / '+T.rfc+'% · '+per);
+    else                     add('g','✅ RFT CNC atteint : '+aCNC+'% · '+per);
+  }
+
+  // ── RFT Assembly ────────────────────────────────────────────
+  if(aASM!==null){
+    if(aASM < T.rfa-5)       add('r','🔴 RFT Assembly critique : '+aASM+'% — objectif '+T.rfa+'% · '+per);
+    else if(aASM < T.rfa)    add('a','🟡 RFT Assembly sous objectif : '+aASM+'% / '+T.rfa+'% · '+per);
+    else                     add('g','✅ RFT Assembly atteint : '+aASM+'% · '+per);
+  }
+
+  // ── Taux Erreur MMC ─────────────────────────────────────────
+  if(aTMMC!==null){
+    if(aTMMC > T.tmmc+10)    add('r','🔴 Taux Erreur MMC très élevé : '+aTMMC+'% — limite '+T.tmmc+'% · '+per);
+    else if(aTMMC > T.tmmc)  add('a','🟡 Taux Erreur MMC dépasse limite : '+aTMMC+'% / ≤'+T.tmmc+'% · '+per);
+  }
+
+  // ── Taux Erreur CNC ─────────────────────────────────────────
+  if(aTCNC!==null && aTCNC > T.tec)
+    add('a','🟡 Taux Erreur CNC : '+aTCNC+'% dépasse ≤'+T.tec+'% · '+per);
+
+  // ── Efficacité CNC ──────────────────────────────────────────
+  if(aEff!==null){
+    if(aEff < T.eff-5)       add('r','🔴 Efficacité CNC faible : '+aEff+'% — objectif '+T.eff+'% · '+per);
+    else if(aEff < T.eff)    add('a','🟡 Efficacité CNC sous objectif : '+aEff+'% / '+T.eff+'% · '+per);
+    else                     add('g','✅ Efficacité CNC atteinte : '+aEff+'% · '+per);
+  }
+
+  // ── Finish Good ─────────────────────────────────────────────
+  if(period!=='yearly'&&rows.length){
+    var fgDay=Math.round(totalFG/rows.length*10)/10;
+    if(fgDay < T.fgi)        add('r','🔴 FG/jour critique : '+fgDay+' pcs — seuil intervention '+T.fgi+' pcs');
+    else if(fgDay < T.fg)    add('a','🟡 FG/jour sous objectif : '+fgDay+' pcs / '+T.fg+' pcs');
+    else if(fgDay >= T.fgs)  add('g','🎯 Stretch FG atteint : '+fgDay+' pcs/jour ≥ '+T.fgs+' pcs');
+    else                     add('g','✅ FG/jour dans objectif : '+fgDay+' pcs ≥ '+T.fg+' pcs');
+  }
+
+  // ── Total défauts ────────────────────────────────────────────
+  if(totalDef > 100)         add('r','⚠️ '+totalDef+' défauts détectés · '+per+' — Vérifier Pareto CNC');
+  else if(totalDef > 30)     add('a','⚠️ '+totalDef+' défauts enregistrés · '+per);
+
+  // Sort: red first, then amber, then green
+  var ord={r:0,a:1,g:2};
+  newNotifs.sort(function(a,b){return ord[a.t]-ord[b.t];});
+  notifs=newNotifs;
+  mkNotifs();
+}
+
+function mkNotifs(){
+  var nl=gel('nl');
+  if(!nl)return;
+  if(!notifs.length){
+    nl.innerHTML='<div class="nem">✓ Tous les KPIs sont dans les objectifs</div>';
+    var nb=gel('nbb'); if(nb)nb.style.display='none';
+    return;
+  }
+  var reds=notifs.filter(function(n){return n.t==='r';}).length;
+  var ambs=notifs.filter(function(n){return n.t==='a';}).length;
+  nl.innerHTML=notifs.map(function(n,i){
+    return '<div class="ni" onclick="rmN('+i+')">'+
+      '<div class="nd '+n.t+'"></div>'+
+      '<div><div class="nm">'+n.m+'</div>'+
+      '<div class="nts">'+n.ts+' · cliquer pour ignorer</div></div></div>';
+  }).join('');
+  var badge=reds||notifs.length;
+  var nb=gel('nbb');
+  if(nb){
+    nb.textContent=badge;
+    nb.style.display='flex';
+    nb.style.background=reds?'var(--red)':ambs?'var(--amb)':'var(--grn)';
+  }
+  var ns=gel('notif-summary');
+  if(ns){
+    var parts=[];
+    if(reds) parts.push(reds+' critique'+(reds>1?'s':''));
+    if(ambs) parts.push(ambs+' avertissement'+(ambs>1?'s':''));
+    var grns=notifs.length-reds-ambs;
+    if(grns) parts.push(grns+' ok');
+    ns.textContent=parts.join(' · ');
+  }
+}
+function toggleN(){gel('np').classList.toggle('open');}
+
+// ═══════════════════════════════════════════════════════════════
+// FILTERS
+// ═══════════════════════════════════════════════════════════════
+function buildYearChips(){
+  const cont=gel('ycs');cont.innerHTML='';
+  const yrs=period==='daily'?[2026]:ALL_YEARS;
+  if(period==='daily')selYear=2026;
+  yrs.forEach(y=>{
+    const b=document.createElement('button');
+    b.className='yc'+(y===selYear?' active':'');b.textContent=String(y);
+    b.onclick=()=>{selYear=y;cont.querySelectorAll('.yc').forEach(x=>x.classList.remove('active'));b.classList.add('active');buildMonthChips();rebuildAll();};
+    cont.appendChild(b);
+  });
+}
+function buildMonthChips(){
+  const mcs=gel('mcs');if(!mcs)return;mcs.innerHTML='';
+  const months=[...new Set(RAW.filter(r=>r.y===selYear).map(r=>r.m))].sort();
+  if(!months.includes(selMonth))selMonth=months[0]||1;
+  months.forEach(mn=>{
+    const b=document.createElement('button');
+    b.className='yc'+(mn===selMonth?' active':'');b.textContent=MO[mn-1];
+    b.onclick=()=>{selMonth=mn;mcs.querySelectorAll('.yc').forEach(x=>x.classList.remove('active'));b.classList.add('active');rebuildAll();};
+    mcs.appendChild(b);
+  });
+}
+function setPeriod(p,btn){
+  period=p;
+  document.querySelectorAll('.sb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  const showM=p!=='yearly';
+  gel('mgr').style.display=showM?'flex':'none';
+  gel('mgrdiv').style.display=showM?'block':'none';
+  buildYearChips();buildMonthChips();rebuildAll();
+}
+function getRows(){
+  if(period==='yearly') return{labels:buildYearly().map(r=>r.lbl),rows:buildYearly()};
+  if(period==='monthly'){const rows=buildMonthly().filter(r=>r.y===selYear);return{labels:rows.map(r=>r.lbl),rows};}
+  const rows=RAW.filter(r=>r.y===selYear&&r.m===selMonth);return{labels:rows.map(r=>r.d),rows};
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CHART.JS BASE
+// ═══════════════════════════════════════════════════════════════
+Chart.defaults.color='#4a5568';
+Chart.defaults.font.family="'DM Sans',sans-serif";
+Chart.defaults.font.size=11;
+// Custom label-drawing plugin — no external CDN needed
+// Draws value labels above each bar directly on the canvas after render
+Chart.register({
+  id: 'barLabels',
+  afterDatasetsDraw: function(chart) {
+    var ctx = chart.ctx;
+    chart.data.datasets.forEach(function(dataset, i) {
+      // Only draw on bar datasets
+      if (dataset.type === 'line') return;
+      var meta = chart.getDatasetMeta(i);
+      if (!meta || meta.hidden) return;
+      meta.data.forEach(function(bar, j) {
+        var val = dataset.data[j];
+        if (val === null || val === undefined || val === 0 || isNaN(val)) return;
+        // Get suffix from chart options or dataset label
+        var sfx = chart.options._sfx || '%';
+        var txt = (typeof val === 'number' && val % 1 !== 0) ? val.toFixed(1) + sfx : val + sfx;
+        ctx.save();
+        ctx.fillStyle   = '#c0cad8';
+        ctx.font        = '700 9px DM Mono, monospace';
+        ctx.textAlign   = 'center';
+        ctx.textBaseline = 'bottom';
+        var x = bar.x;
+        var y = bar.y - 2;
+        // Clamp to chart area top
+        y = Math.max(chart.chartArea.top + 10, y);
+        ctx.fillText(txt, x, y);
+        ctx.restore();
+      });
+    });
+  }
+});
+
+function mk(id,cfg){
+  if(charts[id])charts[id].destroy();
+  const c=gel(id);if(!c)return;
+  charts[id]=new Chart(c.getContext('2d'),cfg);
+}
+
+function baseOpts(sfx, mn, mx) {
+  sfx = sfx || '%';
+  mn  = (mn  === undefined || mn  === null) ? 0   : mn;
+  mx  = (mx  === undefined || mx  === null) ? 105 : mx;
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    _sfx: sfx,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#191d2b', borderColor: '#2d3450', borderWidth: 1,
+        titleColor: '#e2e8f0', bodyColor: '#94a3b8', padding: 9,
+        callbacks: {
+          label: function(c) {
+            return ' ' + (c.dataset.label || '') + ': ' + (c.parsed.y != null ? c.parsed.y + sfx : '');
+          }
+        }
+      },
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(37,42,61,.6)' },
+        ticks: { color: '#4a5568', maxRotation: 45 }
+      },
+      y: {
+        min: mn, max: mx,
+        grid: { color: 'rgba(37,42,61,.6)' },
+        ticks: { color: '#4a5568', callback: function(v) { return v + sfx; } }
+      }
+    }
+  };
+}
+
+
+// dynOpts: compute Y-max dynamically from actual data — no hardcoded 105
+function dynOpts(sfx,dataArr,mn){
+  mn=mn||0; sfx=sfx||' pcs';
+  var vals=dataArr.filter(function(v){return v!=null&&!isNaN(v)&&v>0;});
+  var dataMax=vals.length?Math.max.apply(null,vals):10;
+  var mx=Math.ceil(dataMax*1.15);
+  return baseOpts(sfx,mn,mx);
+}
+
+// [1] Target line — ALWAYS BLUE, no datalabels
+function tgtDs(val,lbl){
+  return{type:'line',label:lbl||'Objectif',data:Array(200).fill(val),
+    borderColor:'#3b82f6',borderWidth:2,borderDash:[5,4],pointRadius:0,tension:0,fill:false,order:0};
+}
+
+// [2] RFT bars: green >= target, red < target
+function rftBarDs(lbl,data,target){
+  const bg=data.map(v=>v===null?'rgba(100,100,100,.3)':(v>=target?'#10b981aa':'#ef4444aa'));
+  const bd=data.map(v=>v===null?'#666':(v>=target?'#10b981':'#ef4444'));
+  return{type:'bar',label:lbl,data,backgroundColor:bg,borderColor:bd,borderWidth:1.5,borderRadius:4,borderSkipped:false};
+}
+
+// [3] Taux bars: green <= target, red > target
+function tauxBarDs(lbl,data,target){
+  const bg=data.map(v=>v===null?'rgba(100,100,100,.3)':(v<=target?'#10b981aa':'#ef4444aa'));
+  const bd=data.map(v=>v===null?'#666':(v<=target?'#10b981':'#ef4444'));
+  return{type:'bar',label:lbl,data,backgroundColor:bg,borderColor:bd,borderWidth:1.5,borderRadius:4,borderSkipped:false};
+}
+
+// Fixed-color bar (FG, pareto)
+function fixedBarDs(lbl,data,color,sfx){
+  return{type:'bar',label:lbl,data,backgroundColor:color+'aa',borderColor:color,borderWidth:1.5,borderRadius:4,borderSkipped:false};
+}
+
+// ═══════════════════════════════════════════════════════════════
+// KPI CARD UPDATES
+// ═══════════════════════════════════════════════════════════════
+function updCards(rows){
+  if(!rows.length)return;
+  const av=fn=>{const vs=rows.map(fn).filter(v=>v!==null&&!isNaN(v));return vs.length?Math.round(vs.reduce((a,b)=>a+b,0)/vs.length*10)/10:null;};
+  const sm=fn=>rows.reduce((s,r)=>s+(fn(r)||0),0);
+  const aMMC=av(r=>r.rft_mmc),aCNC=av(r=>r.rft_cnc),aASM=av(r=>r.rft_asm);
+  const aTMMC=av(r=>r.taux_mmc),aEff=av(r=>r.eff_cnc),aTCNC=av(r=>r.taux_cnc),aTA=av(r=>r.taux_asm);
+  const setK=(vid,bid,val,tgt_)=>{
+    if(val===null){se(vid,'—','neutral');if(gel(bid))gel(bid).style.width='0%';return;}
+    se(vid,val+'%',cls(val,tgt_));
+    if(gel(bid)){gel(bid).style.width=Math.min(Math.max(val,0),100)+'%';gel(bid).style.background=val>=tgt_?'#10b981':'#ef4444';}
+  };
+  const setTaux=(vid,val,tgt_)=>{if(val!==null)se(vid,val+'%',cls(val,tgt_,true));else se(vid,'—','neutral');};
+  setK('g-mmc','kb-mmc',aMMC,T.rfm);setK('g-cnc','kb-cnc',aCNC,T.rfc);setK('g-asm','kb-asm',aASM,T.rfa);
+  setTaux('g-taux-mmc',aTMMC,T.tmmc);
+  gel('g-fg').textContent=sm(r=>r.fg).toLocaleString('fr-FR');
+  gel('g-fg-sub').textContent=period==='yearly'?'pièces total':period==='monthly'?'pièces mois':'FG période';
+  setK('c-rft','kb-crft',aCNC,T.rfc);setTaux('c-taux',aTCNC,T.tec);setK('c-eff','kb-ceff',aEff,T.eff);
+  setK('a-rft','kb-arft',aASM,T.rfa);setTaux('a-taux',aTA,T.tea);
+  se('a-def',sm(r=>r.asm_def).toLocaleString('fr-FR'),'neutral');
+  if(gel('d-mmc'))se('d-mmc',aMMC!==null?aMMC+'%':'—',cls(aMMC,T.rfm));
+  if(gel('d-cnc'))se('d-cnc',aCNC!==null?aCNC+'%':'—',cls(aCNC,T.rfc));
+  if(gel('d-asm'))se('d-asm',aASM!==null?aASM+'%':'—',cls(aASM,T.rfa));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GLOBAL CHARTS
+// ═══════════════════════════════════════════════════════════════
+function bldGlobal(){
+  const{labels,rows}=getRows();
+  updCards(rows);
+  const meta=period==='yearly'?`Annuel (${ALL_YEARS.join(', ')})`
+    :period==='monthly'?`Mensuel — ${selYear}`:`Journalier — ${MO[selMonth-1]} ${selYear}`;
+  gel('g-meta').textContent=`RFT_MMC = 1 − Taux_erreur_MMC — ${meta}`;
+  gel('g-cnc-meta').textContent=meta;gel('g-asm-meta').textContent=meta;
+  gel('g-main-title').textContent=`RFT MMC ★ — ${meta}`;
+  const mm=rows.map(r=>r.rft_mmc),mc=rows.map(r=>r.rft_cnc),ma=rows.map(r=>r.rft_asm),tm=rows.map(r=>r.taux_mmc);
+  const aMin=Math.max(0,Math.min(T.rfa-10,...ma.filter(v=>v!==null))-2);
+  const maxTM=Math.max(...tm.filter(v=>v!==null&&!isNaN(v)),T.tmmc+2);
+
+  mk('c-gm',{type:'bar',data:{labels,datasets:[rftBarDs('RFT MMC',mm,T.rfm),tgtDs(T.rfm,'Objectif '+T.rfm+'%')]},options:baseOpts('%',Math.min(0,...mm.filter(v=>v!==null))-2,105)});
+  mk('c-gc',{type:'bar',data:{labels,datasets:[rftBarDs('RFT CNC',mc,T.rfc),tgtDs(T.rfc,'Objectif '+T.rfc+'%')]},options:baseOpts('%',0,105)});
+  mk('c-ga',{type:'bar',data:{labels,datasets:[rftBarDs('RFT Assembly',ma,T.rfa),tgtDs(T.rfa,'Objectif '+T.rfa+'%')]},options:baseOpts('%',aMin,100.5)});
+  mk('c-taux-mmc',{type:'bar',data:{labels,datasets:[tauxBarDs('Taux Erreur MMC',tm,T.tmmc),tgtDs(T.tmmc,'Objectif ≤ '+T.tmmc+'%')]},options:baseOpts('%',0,maxTM+3)});
+
+  // Table
+  const tb=gel('g-tbl');tb.innerHTML='';
+  rows.forEach((r,i)=>{
+    if(!r.qte)return;
+    const fp=v=>v!==null?v.toFixed(1)+'%':'—';
+    tb.innerHTML+=`<tr><td style="color:var(--txt);font-weight:600">${labels[i]}</td>
+      <td>${(r.qte||0).toLocaleString()}</td><td>${r.cnc_def||0}</td><td>${r.asm_def||0}</td><td>${(r.fg||0).toLocaleString()}</td>
+      <td><span class="pill ${cls(r.rft_mmc,T.rfm)}">${fp(r.rft_mmc)}</span></td>
+      <td><span class="pill ${cls(r.rft_cnc,T.rfc)}">${fp(r.rft_cnc)}</span></td>
+      <td><span class="pill ${cls(r.rft_asm,T.rfa)}">${fp(r.rft_asm)}</span></td>
+      <td><span class="pill ${cls(r.taux_cnc,T.tec,true)}">${fp(r.taux_cnc)}</span></td>
+      <td><span class="pill ${cls(r.taux_asm,T.tea,true)}">${fp(r.taux_asm)}</span></td>
+      <td><span class="pill ${cls(r.taux_mmc,T.tmmc,true)}">${fp(r.taux_mmc)}</span></td></tr>`;
+  });
+
+  // RFT per Process charts (in Global tab)
+  bldProcessCharts();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RFT PER PROCESS — matches screenshot layout EXACTLY
+// Two separate sub-charts side by side:
+// LEFT: Duplication (overall + CNC + FAO + MONTAGE + CAO)
+// RIGHT: Prototype  (overall + CAO + CNC + FAO + MONTAGE)
+// Each bar has its own individual objectif shown as a per-bar line
+// ═══════════════════════════════════════════════════════════════
+function getProcessRows(){
+  // Returns list of {label, dup:{total,CNC,FAO,MONTAGE,CAO}, proto:{...}} for current period
+  if(period==='monthly'||period==='daily'){
+    const key=MO[selMonth-1]+' '+selYear;
+    const d=PROCESS_DATA[key];
+    if(d) return[{label:key,dup:d.Duplication,proto:d.Prototype}];
+    return[];
+  }
+  // Yearly: aggregate all months for selYear
+  const rows=[];
+  Object.entries(PROCESS_DATA).forEach(([label,d])=>{
+    const yr=label.split(' ')[1];
+    if(period==='yearly'&&ALL_YEARS.map(String).includes(yr)){
+      rows.push({label,yr:+yr,dup:d.Duplication,proto:d.Prototype});
+    }
+  });
+  // Group by year
+  const byYear={};
+  rows.forEach(r=>{
+    if(!byYear[r.yr])byYear[r.yr]={dup:{total:[],CNC:[],FAO:[],MONTAGE:[],CAO:[]},proto:{total:[],CNC:[],FAO:[],MONTAGE:[],CAO:[]}};
+    const g=byYear[r.yr];
+    if(r.dup){g.dup.total.push(r.dup.total);['CNC','FAO','MONTAGE','CAO'].forEach(p=>r.dup.processes&&g.dup[p].push(r.dup.processes[p]));}
+    if(r.proto){g.proto.total.push(r.proto.total);['CNC','FAO','MONTAGE','CAO'].forEach(p=>r.proto.processes&&g.proto[p].push(r.proto.processes[p]));}
+  });
+  const avg2=arr=>arr.filter(v=>v!=null).length?Math.round(arr.filter(v=>v!=null).reduce((a,b)=>a+b,0)/arr.filter(v=>v!=null).length*10)/10:null;
+  return Object.entries(byYear).sort(([a],[b])=>+a-+b).map(([yr,g])=>({
+    label:yr,
+    dup:{total:avg2(g.dup.total),processes:{CNC:avg2(g.dup.CNC),FAO:avg2(g.dup.FAO),MONTAGE:avg2(g.dup.MONTAGE),CAO:avg2(g.dup.CAO)}},
+    proto:{total:avg2(g.proto.total),processes:{CNC:avg2(g.proto.CNC),FAO:avg2(g.proto.FAO),MONTAGE:avg2(g.proto.MONTAGE),CAO:avg2(g.proto.CAO)}}
+  }));
+}
+
+function bldProcessCharts(){
+  const rows=getProcessRows();
+
+  // Update section header
+  const lbl=period==='yearly'?'Toutes années (agrégé)':period==='monthly'?`Mensuel — ${selYear}`:`${MO[selMonth-1]} ${selYear}`;
+  const pel=gel('process-period-label');if(pel)pel.textContent=lbl;
+
+  // Objectif values per process (from screenshot pattern):
+  // Duplication: overall=T.rfd, CNC=97, FAO=99, MONTAGE=99, CAO=97
+  // Prototype:   overall=T.rfp, CAO=97, CNC=95, FAO=97, MONTAGE=99
+  const DUP_LABELS   = ['Duplication','CNC','FAO','MONTAGE','CAO'];
+  const PROTO_LABELS = ['Prototype',  'CAO','CNC','FAO',    'MONTAGE'];
+  const DUP_TGTS   = [T.rfd, 97, 99, 99, 97];
+  const PROTO_TGTS = [T.rfp, 97, 95, 97, 99];
+
+  // Build data arrays
+  // For multiple periods: average across selected periods
+  function buildData(statu, procOrder, procKey){
+    if(!rows.length) return procOrder.map(()=>null);
+    const validRows=rows.filter(r=>r[statu]);
+    if(!validRows.length) return procOrder.map(()=>null);
+    const av=arr=>arr.filter(v=>v!=null).length?Math.round(arr.filter(v=>v!=null).reduce((a,b)=>a+b,0)/arr.filter(v=>v!=null).length*10)/10:null;
+    return procOrder.map((lbl,i)=>{
+      if(i===0) return av(validRows.map(r=>r[statu]?.total));
+      return av(validRows.map(r=>r[statu]?.processes?.[lbl]));
+    });
+  }
+
+  const dupVals   = buildData('dup',   DUP_LABELS,   'dup');
+  const protoVals = buildData('proto', PROTO_LABELS, 'proto');
+
+  // Bar colors: green if >= individual objectif, red otherwise
+  const makeBarColors=(vals,tgts)=>({
+    bg:  vals.map((v,i)=>v===null?'rgba(100,100,100,.3)':(v>=tgts[i]?'#10b981bb':'#ef4444bb')),
+    bd:  vals.map((v,i)=>v===null?'#666':(v>=tgts[i]?'#10b981':'#ef4444'))
+  });
+
+  const dupC   = makeBarColors(dupVals,   DUP_TGTS);
+  const protoC = makeBarColors(protoVals, PROTO_TGTS);
+
+  // Per-bar objectif "line" dataset (scatter-like: one point per bar at its target)
+  // We use a line dataset with null gaps to show only the target dot for each bar
+  // Actually: use a bar type with 0 width overlay — easiest: use point scatter
+  // Best approach: render targets as a connected line showing individual targets
+  const dupTgtPoints   = DUP_TGTS.map((v,i)=>({x:i,y:v}));
+  const protoTgtPoints = PROTO_TGTS.map((v,i)=>({x:i,y:v}));
+
+  // Target line: blue dashed, tension:0 → straight segments between points
+  // Each point sits at its bar's exact objectif — matches other chart style exactly
+  function buildFlatTgtDataset(tgts){
+    return {
+      type: 'line',
+      label: 'Objectif RFT',
+      data: tgts,
+      borderColor: '#3b82f6',
+      borderWidth: 2,
+      borderDash: [5, 4],
+      tension: 0,
+      fill: false,
+      order: 0,
+      pointBackgroundColor: '#3b82f6',
+      pointBorderColor: '#ffffff',
+      pointBorderWidth: 1.5,
+      pointRadius: 4,
+      pointHoverRadius: 6
+    };
+  }
+
+  const chartBase=(labels,vals,colors,tgts)=>({
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {type:'bar',label:'%RFT',data:vals,backgroundColor:colors.bg,borderColor:colors.bd,borderWidth:1.5,borderRadius:3,borderSkipped:false,
+        },
+        buildFlatTgtDataset(tgts)
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:true,position:'bottom',labels:{font:{size:10},padding:10,
+          generateLabels:function(){return[
+            {text:'%RFT',fillStyle:'#10b981',strokeStyle:'#10b981',lineWidth:0},
+            {text:'Objectif',fillStyle:'transparent',strokeStyle:'#3b82f6',lineWidth:2.5,
+             lineDash:[],pointStyle:'circle'}
+          ];}}},
+        tooltip:{backgroundColor:'#191d2b',borderColor:'#2d3450',borderWidth:1,
+          titleColor:'#e2e8f0',bodyColor:'#94a3b8',padding:9,
+          callbacks:{label:function(ctx){
+            if(ctx.datasetIndex===0)return' %RFT: '+(ctx.parsed.y!==null?ctx.parsed.y+'%':'');
+            return' Objectif: '+ctx.parsed.y+'%';
+          }}},
+        datalabels:{}
+      },
+      scales:{
+        x:{grid:{color:'rgba(37,42,61,.4)'},ticks:{color:'#4a5568',font:{size:10}}},
+        y:{min:75,max:103,grid:{color:'rgba(37,42,61,.6)'},ticks:{color:'#4a5568',callback:function(v){return v+'%';}}}
+      }
+    }
+  });
+
+  mk('c-rft-dup',   chartBase(DUP_LABELS,   dupVals,   dupC,   DUP_TGTS));
+  mk('c-rft-proto', chartBase(PROTO_LABELS, protoVals, protoC, PROTO_TGTS));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CNC CHARTS
+// ═══════════════════════════════════════════════════════════════
+function bldCNC(){
+  const{labels,rows}=getRows();
+  const rftD=rows.map(r=>r.rft_cnc),tauxD=rows.map(r=>r.taux_cnc),effD=rows.map(r=>r.eff_cnc);
+  const maxT=Math.max(...tauxD.filter(v=>v!=null&&!isNaN(v)),T.tec+5);
+  const validEff=effD.filter(v=>v!=null&&!isNaN(v));
+
+  mk('c-cnc-rft',{type:'bar',data:{labels,datasets:[rftBarDs('RFT CNC',rftD,T.rfc),tgtDs(T.rfc,'Objectif '+T.rfc+'%')]},options:baseOpts('%',0,105)});
+  mk('c-cnc-taux',{type:'bar',data:{labels,datasets:[tauxBarDs('Taux Erreur CNC',tauxD,T.tec),tgtDs(T.tec,'Objectif ≤ '+T.tec+'%')]},options:baseOpts('%',0,Math.max(maxT+5,T.tec*3))});
+  if(validEff.length) mk('c-cnc-eff',{type:'bar',data:{labels,datasets:[rftBarDs('Efficacité CNC',effD,T.eff),tgtDs(T.eff,'Objectif '+T.eff+'%')]},options:baseOpts('%',Math.min(88,...validEff)-2,100)});
+  // ── Chart 1: Defect types (horizontal bar, colored by severity)
+var paretoVals=PARETO.map(function(r){return r.n;});
+var paretoMax=Math.max.apply(null,paretoVals);
+var paretoLabels=PARETO.map(function(r){return r.d;});
+var paretoBg=paretoVals.map(function(v){return v/paretoMax>0.7?'#ef4444bb':v/paretoMax>0.4?'#f59e0bbb':'#6366f1bb';});
+var paretoBd=paretoVals.map(function(v){return v/paretoMax>0.7?'#ef4444':v/paretoMax>0.4?'#f59e0b':'#6366f1';});
+var paretoOpts={
+  responsive:true,maintainAspectRatio:false,indexAxis:'y',
+  plugins:{
+    legend:{display:false},
+    tooltip:{backgroundColor:'#191d2b',borderColor:'#2d3450',borderWidth:1,titleColor:'#e2e8f0',bodyColor:'#94a3b8',padding:9},
+    datalabels:{display:true,anchor:'end',align:'end',offset:5,clamp:true,
+      color:'#94a3b8',font:{size:10,weight:'700',family:"'DM Mono',monospace"},
+      formatter:function(v){return v.toLocaleString();}}
+  },
+  scales:{
+    x:{grid:{color:'rgba(37,42,61,.5)'},ticks:{color:'#4a5568'}},
+    y:{grid:{color:'rgba(37,42,61,.25)'},ticks:{color:'#94a3b8',font:{size:10}}}
+  }
+};
+mk('c-cnc-pareto',{type:'bar',
+  data:{labels:paretoLabels,datasets:[{
+    type:'bar',label:'Occurrences',data:paretoVals,
+    backgroundColor:paretoBg,borderColor:paretoBd,
+    borderWidth:1.5,borderRadius:3,borderSkipped:false
+  }]},
+  options:paretoOpts
+});
+// ── Chart 2: Corrective actions (same style, amber color)
+var actionLabels=PARETO.map(function(r){return r.a.length>40?r.a.substring(0,40)+'…':r.a;});
+mk('c-cnc-actions',{type:'bar',
+  data:{labels:actionLabels,datasets:[{
+    type:'bar',label:'Occurrences liées',data:paretoVals,
+    backgroundColor:paretoBg,borderColor:paretoBd,
+    borderWidth:1.5,borderRadius:3,borderSkipped:false
+  }]},
+  options:paretoOpts
+});
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ASSEMBLY CHARTS
+// ═══════════════════════════════════════════════════════════════
+function bldASM(){
+  const{labels,rows}=getRows();
+  const rftD=rows.map(r=>r.rft_asm),tauxD=rows.map(r=>r.taux_asm),defD=rows.map(r=>r.asm_def||0);
+  const validR=rftD.filter(v=>v!=null&&!isNaN(v));
+  const maxTau=Math.max(...tauxD.filter(v=>v!=null&&!isNaN(v)),0.1);
+
+  mk('c-asm-rft',{type:'bar',data:{labels,datasets:[rftBarDs('RFT Assembly',rftD,T.rfa),tgtDs(T.rfa,'Objectif '+T.rfa+'%')]},options:baseOpts('%',Math.max(0,(validR.length?Math.min(T.rfa-10,...validR)-2:0)),100.5)});
+  mk('c-asm-taux',{type:'bar',data:{labels,datasets:[tauxBarDs('Taux Erreur Assembly',tauxD,T.tea),tgtDs(T.tea,'Objectif ≤ '+T.tea+'%')]},options:baseOpts('%',0,Math.max(maxTau+2,T.tea+2))});
+  mk('c-asm-def',{type:'bar',data:{labels,datasets:[fixedBarDs('Défauts abs.',defD,'#f59e0b')]},options:baseOpts(' pcs',0,Math.max(...defD)+2)});
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FINISH GOOD CHARTS
+// ═══════════════════════════════════════════════════════════════
+function bldFG(){
+  const allY=buildYearly(),yearM=buildMonthly().filter(r=>r.y===selYear);
+  const fgCards=gel('fg-cards');
+  if(fgCards) fgCards.innerHTML=allY.map(r=>`<div class="kc fg"><div class="kl">${r.y}</div><div class="kv blue">${r.fg.toLocaleString('fr-FR')}</div><div class="kt">pièces FG</div></div>`).join('');
+  const dayR=RAW.filter(r=>r.y===selYear&&r.m===selMonth);
+  const dvals=dayR.map(r=>r.fg);
+  gel('fg-d-title').textContent=`Finish Good Journalier — ${MO[selMonth-1]} ${selYear}`;
+  gel('fg-d-meta').textContent=`${dayR.length} jours`;
+  mk('c-fg-d',{data:{labels:dayR.map(r=>r.d),datasets:[
+    fixedBarDs('FG pcs/jour',dvals,'#34d399'),
+    tgtDs(T.fg,'Target '+T.fg),
+    {type:'line',label:'Stretch '+T.fgs,data:Array(200).fill(T.fgs),borderColor:'#f59e0b',borderWidth:2,borderDash:[4,3],pointRadius:0,tension:0,fill:false,order:0,datalabels:{display:false}}
+  ]},options:baseOpts(' pcs',0,Math.max(...dvals,T.fgs)+8)});
+  if(period==='monthly'){
+    mk('c-fg-m',{type:'bar',data:{labels:yearM.map(r=>r.lbl),datasets:[fixedBarDs('FG',yearM.map(r=>r.fg),'#34d399')]},options:dynOpts(' pcs',yearM.map(r=>r.fg))});
+  } else {
+    const allM=buildMonthly();
+    mk('c-fg-m',{type:'bar',data:{labels:allM.map(r=>r.lbl),datasets:[fixedBarDs('FG',allM.map(r=>r.fg),'#34d399')]},options:dynOpts(' pcs',allM.map(r=>r.fg))});
+  }
+  const bgC=allY.map(r=>r.y===selYear?'#34d399':'#34d39955');
+  mk('c-fg-y',{type:'bar',data:{labels:allY.map(r=>r.lbl),datasets:[{type:'bar',label:'FG',data:allY.map(r=>r.fg),backgroundColor:bgC,borderColor:bgC.map(c=>c.replace('55','')),borderWidth:1.5,borderRadius:4,borderSkipped:false}]},options:dynOpts(' pcs',allY.map(r=>r.fg))});
+}
+
+// ═══════════════════════════════════════════════════════════════
+// JOURNALIER CHARTS
+// ═══════════════════════════════════════════════════════════════
+function bldDaily(){
+  const rows=RAW.filter(r=>r.y===selYear&&r.m===selMonth);
+  const labs=rows.map(r=>r.d);
+  updCards(rows);
+  gel('daily-note').textContent=`📅 ${MO[selMonth-1]} ${selYear} — ${rows.length} jours`;
+  mk('c-d-mmc',{type:'bar',data:{labels:labs,datasets:[rftBarDs('RFT MMC',rows.map(r=>r.rft_mmc),T.rfm),tgtDs(T.rfm,'Objectif')]},options:baseOpts('%',0,105)});
+  mk('c-d-cnc',{type:'bar',data:{labels:labs,datasets:[rftBarDs('RFT CNC',rows.map(r=>r.rft_cnc),T.rfc),tgtDs(T.rfc,'Objectif')]},options:baseOpts('%',0,105)});
+  mk('c-d-tcnc',{type:'bar',data:{labels:labs,datasets:[tauxBarDs('Taux CNC',rows.map(r=>r.taux_cnc),T.tec),tgtDs(T.tec,'Objectif')]},options:baseOpts('%',0)});
+  mk('c-d-asm',{type:'bar',data:{labels:labs,datasets:[rftBarDs('RFT Assembly',rows.map(r=>r.rft_asm),T.rfa),tgtDs(T.rfa,'Objectif')]},options:baseOpts('%',0,105)});
+  const vEff=rows.map(r=>r.eff_cnc).filter(v=>v!=null&&!isNaN(v));
+  mk('c-d-eff',{type:'bar',data:{labels:labs,datasets:[rftBarDs('Efficacité CNC',rows.map(r=>r.eff_cnc),T.eff),tgtDs(T.eff,'Objectif')]},options:baseOpts('%',vEff.length?Math.min(...vEff)-2:88,100)});
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EXTRA FILES
+// ═══════════════════════════════════════════════════════════════
+async function bldExtra(){
+  const cont=gel('extra-content');
+  cont.innerHTML='<div class="spinner-wrap"><div class="spinner"></div>Chargement…</div>';
+  try{
+    const r1=await fetch('/api/additional-tables',{credentials:'include'});
+    if(!r1.ok)throw new Error();
+    const names=await r1.json();
+    if(!names.length){cont.innerHTML=noFilesHTML();return;}
+    const r2=await fetch('/api/dashboard-data',{credentials:'include'});
+    const data=await r2.json();
+    cont.innerHTML='';
+    names.forEach(name=>{
+      const rows=data[name]||[];if(!rows.length)return;
+      const cols=Object.keys(rows[0]);
+      const card=document.createElement('div');card.className='extra-card';
+      card.innerHTML=`<h3>📄 ${name.replace(/_/g,' ')} <small style="color:var(--dim)">${rows.length} lignes</small></h3>
+        <div class="tscroll"><table class="tbl"><thead><tr>${cols.map(c=>`<th>${c.replace(/_/g,' ')}</th>`).join('')}</tr></thead>
+        <tbody>${rows.slice(0,100).map(r=>`<tr>${cols.map(c=>`<td>${r[c]??''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      cont.appendChild(card);
+    });
+  }catch{cont.innerHTML=noFilesHTML();}
+}
+function noFilesHTML(){return`<div style="color:var(--dim);text-align:center;padding:40px">Aucun fichier supplémentaire.<br><span style="font-size:12px">Placez des .xlsx dans Data/ et cliquez 🔄</span></div>`;}
+
+// ═══════════════════════════════════════════════════════════════
+// TAB NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+function showTab(name,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  gel('tab-'+name).classList.add('active');btn.classList.add('active');
+  rebuildAll();
+}
+function rebuildAll(){
+  Object.values(charts).forEach(c=>c.destroy());
+  charts={};
+  buildAll();
+}
+function buildAll(){
+  updTgtLbls();
+  bldGlobal(); // always builds global (includes process charts)
+  const active=document.querySelector('.sec.active');
+  if(!active)return;
+  const id=active.id.replace('tab-','');
+  if(id==='cnc')bldCNC();
+  else if(id==='asm')bldASM();
+  else if(id==='fg')bldFG();
+  else if(id==='daily')bldDaily();
+  else if(id==='extra')bldExtra();
+  // Generate real alerts from current KPI data
+  try{ generateNotifs(); }catch(e){ console.warn('[Notifs]',e); }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MANUAL REFRESH
+// ═══════════════════════════════════════════════════════════════
+async function manualRefresh(){
+  const btn=gel('btn-refresh');
+  if(btn){btn.textContent='⏳ En cours…';btn.disabled=true;btn.style.opacity='.6';}
+  try{
+    const r=await fetch('/api/trigger-automation',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'}});
+    if(r.ok){
+      toast('🔄 Actualisation lancée…');
+      setTimeout(()=>{rebuildAll();toast('✓ Graphiques actualisés');},4000);
+    } else {
+      rebuildAll();toast('✓ Actualisé (standalone)','var(--amb)');
+    }
+  }catch{
+    rebuildAll();toast('✓ Actualisé','var(--amb)');
+  }
+  setTimeout(()=>{if(btn){btn.textContent='🔄 Actualiser';btn.disabled=false;btn.style.opacity='1';}},4500);
+}
+
+// ══════════════════════════════════════════════════════════════
+// AUTO-REFRESH
+// Starts once via DOMContentLoaded. Two independent setInterval calls.
+// Both share _deadline via module-level closure.
+// ══════════════════════════════════════════════════════════════
+// ── AUTO-REFRESH TIMER ───────────────────────────────────────
+// Uses setTimeout(fn,0) to run AFTER current script finishes parsing.
+// Two independent setInterval calls sharing _arDeadline via closure.
+var _arDeadline = Date.now() + 300000;
+
+// Countdown display — starts immediately, runs every second
+setInterval(function() {
+  var rem = Math.max(0, Math.floor((_arDeadline - Date.now()) / 1000));
+  var m = Math.floor(rem / 60);
+  var s = String(rem % 60).padStart(2, '0');
+  var el = document.getElementById('rt');
+  if (el) el.textContent = m + ':' + s;
+}, 1000);
+
+// Data refresh — runs every 5 minutes
+setInterval(function() {
+  _arDeadline = Date.now() + 300000;
+  try {
+    T = loadTargets();
+    updTgtLbls();
+    rebuildAll();
+    toast('🔄 Auto-refresh — données actualisées');
+  } catch(e) { console.warn('[AutoRefresh] Error:', e); }
+}, 300000);
+
+function startAutoRefresh() {} // kept as no-op for compatibility
+</script>
+</body>
+</html>

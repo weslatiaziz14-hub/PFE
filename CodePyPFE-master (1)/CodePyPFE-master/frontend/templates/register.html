@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}Inscription - KPI Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 200px);
+        padding: 2rem;
+    }
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 450px;
+        border: 1px solid #eef2f5;
+    }
+    .auth-card h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1f6392;
+        margin-bottom: 0.5rem;
+    }
+    .auth-subtitle {
+        font-size: 0.9rem;
+        color: #5f7f9e;
+        margin-bottom: 2rem;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #2c5a7a;
+        margin-bottom: 0.5rem;
+    }
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid #dee4ea;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        background: white;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #2c7da0;
+        box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
+    }
+    .form-group small {
+        display: block;
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin-top: 0.3rem;
+    }
+    .btn-primary {
+        width: 100%;
+        padding: 0.9rem;
+        background: linear-gradient(135deg, #2c7da0, #1f6392);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 0.5rem;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(44,125,160,0.3);
+    }
+    .auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eef2f5;
+        font-size: 0.9rem;
+        color: #5f7f9e;
+    }
+    .auth-footer a {
+        color: #2c7da0;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .auth-footer a:hover { text-decoration: underline; }
+    .alert {
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+    }
+    .alert-error {
+        background: #fee;
+        border-left: 4px solid #ef4444;
+        color: #7f1d1d;
+    }
+    .alert-success {
+        background: #d1fae5;
+        border-left: 4px solid #10b981;
+        color: #064e3b;
+    }
+    .loading-text {
+        color: #94a3b8;
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+    .no-users-msg {
+        background: #fff3cd;
+        border-left: 4px solid #f59e0b;
+        color: #92400e;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2><i class="fas fa-user-plus"></i> Inscription</h2>
+        <p class="auth-subtitle">Sélectionnez votre nom et créez votre mot de passe</p>
+
+        {% if error %}
+            <div class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i> {{ error }}
+            </div>
+        {% endif %}
+
+        {% if success %}
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i> {{ success }}
+            </div>
+            <div style="text-align:center;margin-top:1rem">
+                <p style="color:#059669;margin-bottom:1rem;font-weight:500">
+                    Redirection vers la page de connexion...
+                </p>
+                <a href="{{ url_for('login') }}"
+                   style="display:inline-block;text-decoration:none;padding:0.6rem 1.5rem;
+                          background:linear-gradient(135deg,#2c7da0,#1f6392);color:white;
+                          border-radius:10px;font-weight:600">
+                    Se connecter maintenant
+                </a>
+            </div>
+            <script>
+                setTimeout(function() {
+                    window.location.href = "{{ url_for('login') }}";
+                }, 3000);
+            </script>
+        {% else %}
+            <form method="POST" id="registerForm">
+
+                <!-- Employee dropdown — populated from /api/unregistered-users -->
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i> Votre nom (employé MMC)
+                    </label>
+                    <select id="username" name="username" required>
+                        <option value="">⏳ Chargement des employés...</option>
+                    </select>
+                    <small id="users-hint" class="loading-text">
+                        Chargement de la liste des employés...
+                    </small>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> Mot de passe
+                    </label>
+                    <input type="password" id="password" name="password"
+                           required minlength="6"
+                           placeholder="Minimum 6 caractères">
+                    <small>Minimum 6 caractères</small>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label for="password_confirm">
+                        <i class="fas fa-lock"></i> Confirmer le mot de passe
+                    </label>
+                    <input type="password" id="password_confirm" name="password_confirm"
+                           required minlength="6"
+                           placeholder="Répétez votre mot de passe">
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    <i class="fas fa-user-check"></i> Créer mon compte
+                </button>
+            </form>
+        {% endif %}
+
+        <div class="auth-footer">
+            <p>Vous avez déjà un compte ? <a href="{{ url_for('login') }}">Se connecter</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Load unregistered employees into the dropdown
+async function loadEmployees() {
+    const select   = document.getElementById('username');
+    const hint     = document.getElementById('users-hint');
+    const submitBtn= document.getElementById('submitBtn');
+
+    try {
+        const res   = await fetch('/api/unregistered-users');
+        const users = await res.json();
+
+        select.innerHTML = '';   // clear loading option
+
+        if (!users || users.length === 0) {
+            // No unregistered users left
+            select.innerHTML = '<option value="">Aucun employé disponible</option>';
+            select.disabled  = true;
+            if (submitBtn) submitBtn.disabled = true;
+            if (hint) {
+                hint.className = '';
+                hint.innerHTML = '<span style="color:#f59e0b;font-weight:600">⚠ Aucun employé non enregistré trouvé.</span><br>' +
+                                 'Contactez votre manager pour être ajouté au système.';
+            }
+            return;
+        }
+
+        // Add placeholder
+        const placeholder = document.createElement('option');
+        placeholder.value    = '';
+        placeholder.textContent = '— Sélectionnez votre nom —';
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        select.appendChild(placeholder);
+
+        // Add each employee
+        users.forEach(username => {
+            const opt = document.createElement('option');
+            opt.value       = username;
+            opt.textContent = username;
+            select.appendChild(opt);
+        });
+
+        if (hint) {
+            hint.className   = '';
+            hint.textContent = users.length + ' employé(s) disponible(s) — sélectionnez votre nom.';
+        }
+
+    } catch (err) {
+        console.error('Failed to load employees:', err);
+        select.innerHTML = '<option value="">Erreur de chargement</option>';
+        if (hint) {
+            hint.textContent = 'Impossible de charger la liste. Vérifiez que le serveur est démarré.';
+            hint.style.color = '#ef4444';
+        }
+    }
+}
+
+// Password match validation
+document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+    const pw  = document.getElementById('password').value;
+    const pw2 = document.getElementById('password_confirm').value;
+    const usr = document.getElementById('username').value;
+
+    if (!usr) {
+        e.preventDefault();
+        alert('Veuillez sélectionner votre nom dans la liste.');
+        return false;
+    }
+    if (pw !== pw2) {
+        e.preventDefault();
+        alert('Les mots de passe ne correspondent pas !');
+        return false;
+    }
+});
+
+// Load employees on page load
+loadEmployees();
+</script>
+{% endblock %}

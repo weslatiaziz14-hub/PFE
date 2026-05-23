@@ -1,0 +1,189 @@
+/* =============================================================================
+   KPI Dashboard - Enhanced Styles
+   ============================================================================= */
+
+/* Ensure smooth tab dropdown positioning */
+.tabs-dropdown {
+    position: fixed !important;
+    z-index: 9999;
+}
+
+/* Additional table styling */
+.table-container {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.data-table th {
+    background: #f0f6fa;
+    color: #1b4b6c;
+    font-weight: 600;
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 2px solid #d4e2ec;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.data-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #eaf0f5;
+    color: #2c3e50;
+}
+
+.data-table tr:hover td {
+    background: #fafdff;
+}
+
+/* Refresh button */
+.btn-refresh {
+    background: #2c7da0;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-refresh:hover {
+    background: #1f6392;
+    transform: translateY(-1px);
+}
+
+.btn-refresh i {
+    font-size: 0.9rem;
+}
+
+/* Chart containers */
+.chart-container {
+    position: relative;
+    width: 100%;
+}
+
+.chart-container canvas {
+    max-height: 400px !important;
+}
+
+.chart-container.small canvas {
+    max-height: 300px !important;
+}
+
+/* No data message */
+.no-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    color: #94a3b8;
+    font-style: italic;
+    font-size: 0.95rem;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 400px;
+    color: #5f7f9e;
+}
+
+.spinner {
+    border: 4px solid #eef3fa;
+    border-top: 4px solid #2c7da0;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Refresh info banner */
+.refresh-info {
+    text-align: center;
+    padding: 0.6rem 1rem;
+    background: linear-gradient(135deg, #e3f2fd 0%, #f0f6fa 100%);
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    color: #1976d2;
+    font-weight: 500;
+    border: 1px solid #c6e9ff;
+}
+
+.refresh-info i {
+    margin-right: 0.5rem;
+    color: #2c7da0;
+}
+
+/* Alert boxes */
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #e3f2fd 100%);
+    border-left: 4px solid #17a2b8;
+    color: #0c5460;
+    padding: 1rem 1.2rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.alert-info strong {
+    font-weight: 700;
+    color: #064e5b;
+}
+
+/* Additional tables section */
+.additional-tables {
+    margin-top: 2rem;
+}
+
+.additional-tables .kpi-card {
+    margin-bottom: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .kpi-card.wide {
+        grid-column: span 1;
+    }
+    
+    .header-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .year-filter,
+    .month-filter {
+        width: 100%;
+    }
+}
+
+/* Chart.js canvas sizing fix */
+canvas {
+    max-width: 100%;
+    height: auto !important;
+}

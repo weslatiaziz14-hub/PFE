@@ -1,0 +1,561 @@
+[2026-04-06 15:31:55] [INFO] Starting KPI automation...
+[2026-04-06 15:31:55] [INFO] Folders verified/created.
+[2026-04-06 15:31:55] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-06 15:31:55] [INFO] Found 4 Excel files in data
+[2026-04-06 15:31:55] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 15:31:55] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-06 15:31:55] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-06 15:31:55] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-06 15:31:55] [INFO] 
+=== DATA LOADING ===
+[2026-04-06 15:31:55] [INFO] 
+--- Loading CNC files ---
+[2026-04-06 15:31:55] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-06 15:31:56] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 15:31:58] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 15:31:58] [INFO]   Removed 4222 duplicate records based on Order ID
+[2026-04-06 15:31:58] [SUCCESS] Combined 2 sheets into 7927 rows for CNC
+[2026-04-06 15:31:58] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-06 15:31:58] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-06 15:31:58] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 15:31:58] [INFO]   Removed 816 duplicate records based on Order ID
+[2026-04-06 15:31:59] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 15:31:59] [INFO]   Removed 852 duplicate records based on Order ID
+[2026-04-06 15:31:59] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-06 15:31:59] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 15:31:59] [INFO]   Removed 1853 duplicate records based on Order ID
+[2026-04-06 15:31:59] [SUCCESS] Combined 3 sheets into 1951 rows for FINAL_CONTROL
+[2026-04-06 15:31:59] [INFO] 
+--- Loading MMC files ---
+[2026-04-06 15:31:59] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 15:32:00] [INFO]   Loaded 'Лист1' (509 rows) from 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 15:32:00] [INFO]   Loaded 'Feuil1' (21 rows) from 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 15:32:00] [SUCCESS] Combined 2 sheets into 518 rows for MMC
+[2026-04-06 15:32:00] [INFO] 
+=== PROCESSING ===
+[2026-04-06 15:32:00] [SUCCESS] Suivi Journalier — 7927 rows
+[2026-04-06 15:32:00] [SUCCESS] CNC KPIs — 8 sheets generated
+[2026-04-06 15:32:00] [SUCCESS] Final Control KPIs — 3 sheets generated
+[2026-04-06 15:32:00] [SUCCESS] MMC Production KPIs — 0 sheets generated
+[2026-04-06 15:32:00] [SUCCESS] Global KPIs — 3 sheets generated
+[2026-04-06 15:32:00] [INFO] 
+=== EXPORT ===
+[2026-04-06 15:32:01] [INFO]   [Sheet] Suivi_Journalier (7927 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] CNC_Mensuel (40 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] CNC_RFT_Hebdomadaire (178 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] CNC_Pareto_Defauts (20 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] CNC_Pareto_Actions (20 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] CNC_Par_Operateur (9 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] CNC_Par_Statut (3 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] CNC_Par_Piece (1 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] CNC_Par_Origine (19 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] CF_Mensuel (41 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] CF_Scrap_Rework (44 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] CF_Par_Technicien (7 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] KPI_Mensuel (42 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] RFT_Global (42 rows)
+[2026-04-06 15:32:01] [INFO]   [Sheet] KPI_Global (6 rows)
+[2026-04-06 15:32:02] [SUCCESS] KPI Output saved: output\KPI_Output.xlsx
+[2026-04-06 15:32:02] [SUCCESS] DONE. Open KPI_Output.xlsx and connect to Power BI.
+[2026-04-06 15:53:14] [INFO] Starting KPI automation...
+[2026-04-06 15:53:14] [INFO] Folders verified/created.
+[2026-04-06 15:53:14] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-06 15:53:14] [INFO] Found 4 Excel files in data
+[2026-04-06 15:53:14] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 15:53:14] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-06 15:53:14] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-06 15:53:14] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-06 15:53:14] [INFO] 
+=== DATA LOADING ===
+[2026-04-06 15:53:14] [INFO] 
+--- Loading CNC files ---
+[2026-04-06 15:53:14] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-06 15:53:15] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 15:53:16] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 15:53:16] [INFO]   Removed 4222 duplicate records based on Order ID
+[2026-04-06 15:53:16] [SUCCESS] Combined 2 sheets into 7927 rows for CNC
+[2026-04-06 15:53:16] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-06 15:53:16] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-06 15:53:16] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 15:53:16] [INFO]   Removed 816 duplicate records based on Order ID
+[2026-04-06 15:53:17] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 15:53:17] [INFO]   Removed 852 duplicate records based on Order ID
+[2026-04-06 15:53:17] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-06 15:53:17] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 15:53:17] [INFO]   Removed 1853 duplicate records based on Order ID
+[2026-04-06 15:53:17] [SUCCESS] Combined 3 sheets into 1951 rows for FINAL_CONTROL
+[2026-04-06 15:53:17] [INFO] 
+--- Loading MMC files ---
+[2026-04-06 15:53:17] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 15:58:22] [INFO] Starting KPI automation...
+[2026-04-06 15:58:22] [INFO] Folders verified/created.
+[2026-04-06 15:58:22] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-06 15:58:22] [INFO] Found 4 Excel files in data
+[2026-04-06 15:58:22] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 15:58:22] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-06 15:58:22] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-06 15:58:22] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-06 15:58:22] [INFO] 
+=== DATA LOADING ===
+[2026-04-06 15:58:22] [INFO] 
+--- Loading CNC files ---
+[2026-04-06 15:58:22] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-06 15:58:23] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 15:58:24] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 15:58:24] [INFO]   Removed 4222 duplicate records based on Order ID
+[2026-04-06 15:58:24] [SUCCESS] Combined 2 sheets into 7927 rows for CNC
+[2026-04-06 15:58:24] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-06 15:58:24] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-06 15:58:24] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 15:58:24] [INFO]   Removed 816 duplicate records based on Order ID
+[2026-04-06 15:58:25] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 15:58:25] [INFO]   Removed 852 duplicate records based on Order ID
+[2026-04-06 15:58:25] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-06 15:58:25] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 15:58:25] [INFO]   Removed 1853 duplicate records based on Order ID
+[2026-04-06 15:58:25] [SUCCESS] Combined 3 sheets into 1951 rows for FINAL_CONTROL
+[2026-04-06 15:58:25] [INFO] 
+--- Loading MMC files ---
+[2026-04-06 15:58:25] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 15:58:59] [INFO] Starting KPI automation...
+[2026-04-06 15:58:59] [INFO] Folders verified/created.
+[2026-04-06 15:58:59] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-06 15:58:59] [INFO] Found 4 Excel files in data
+[2026-04-06 15:58:59] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 15:58:59] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-06 15:58:59] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-06 15:58:59] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-06 15:58:59] [INFO] 
+=== DATA LOADING ===
+[2026-04-06 15:58:59] [INFO] 
+--- Loading CNC files ---
+[2026-04-06 15:58:59] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-06 15:59:00] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 15:59:01] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 16:00:47] [INFO] Starting KPI automation...
+[2026-04-06 16:00:47] [INFO] Folders verified/created.
+[2026-04-06 16:00:47] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-06 16:00:47] [INFO] Found 4 Excel files in data
+[2026-04-06 16:00:47] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 16:00:47] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-06 16:00:47] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-06 16:00:47] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-06 16:00:47] [INFO] 
+=== DATA LOADING ===
+[2026-04-06 16:00:47] [INFO] 
+--- Loading CNC files ---
+[2026-04-06 16:00:47] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-06 16:00:48] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 16:00:49] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 16:00:49] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-06 16:00:49] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-06 16:00:49] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-06 16:00:49] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 16:00:50] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 16:00:50] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-06 16:00:50] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 16:00:50] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-06 16:00:50] [INFO] 
+--- Loading MMC files ---
+[2026-04-06 16:00:50] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 16:04:07] [INFO] Starting KPI automation...
+[2026-04-06 16:04:07] [INFO] Folders verified/created.
+[2026-04-06 16:04:07] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-06 16:04:07] [INFO] Found 4 Excel files in data
+[2026-04-06 16:04:07] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-06 16:04:07] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-06 16:04:07] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-06 16:04:07] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-06 16:04:07] [INFO] 
+=== DATA LOADING ===
+[2026-04-06 16:04:07] [INFO] 
+--- Loading CNC files ---
+[2026-04-06 16:04:07] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-06 16:04:08] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 16:04:09] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-06 16:04:09] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-06 16:04:09] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-06 16:04:09] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-06 16:04:09] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 16:04:09] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 16:04:09] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-06 16:04:10] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-06 16:04:10] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-06 16:04:10] [INFO] 
+--- Loading MMC files ---
+[2026-04-06 16:04:10] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 03:35:29] [INFO] Starting KPI automation...
+[2026-04-07 03:35:29] [INFO] Folders verified/created.
+[2026-04-07 03:35:29] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 03:35:29] [INFO] Found 4 Excel files in data
+[2026-04-07 03:35:29] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 03:35:29] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 03:35:29] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 03:35:29] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 03:35:29] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 03:35:29] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 03:35:29] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 03:35:30] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 03:35:31] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 03:35:31] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 03:35:31] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 03:35:31] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 03:35:31] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 03:35:31] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 03:35:31] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 03:35:32] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 03:35:32] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 03:35:32] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 03:35:32] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:28:21] [INFO] Starting KPI automation...
+[2026-04-07 15:28:21] [INFO] Folders verified/created.
+[2026-04-07 15:28:21] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 15:28:21] [INFO] Found 4 Excel files in data
+[2026-04-07 15:28:21] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:28:21] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 15:28:21] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 15:28:21] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 15:28:21] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 15:28:21] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 15:28:21] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 15:28:21] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:28:23] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:28:23] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 15:28:23] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 15:28:23] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 15:28:23] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:28:23] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:28:23] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 15:28:23] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:28:23] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 15:28:23] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 15:28:23] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:33:29] [INFO] Starting KPI automation...
+[2026-04-07 15:33:29] [INFO] Folders verified/created.
+[2026-04-07 15:33:29] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 15:33:29] [INFO] Found 4 Excel files in data
+[2026-04-07 15:33:29] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:33:29] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 15:33:29] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 15:33:29] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 15:33:29] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 15:33:29] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 15:33:29] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 15:33:29] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:33:30] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:33:30] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 15:33:30] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 15:33:30] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 15:33:31] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:33:31] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:33:31] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 15:33:31] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:33:31] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 15:33:31] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 15:33:31] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:38:36] [INFO] Starting KPI automation...
+[2026-04-07 15:38:36] [INFO] Folders verified/created.
+[2026-04-07 15:38:36] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 15:38:36] [INFO] Found 4 Excel files in data
+[2026-04-07 15:38:36] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:38:36] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 15:38:36] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 15:38:36] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 15:38:36] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 15:38:36] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 15:38:36] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 15:38:37] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:38:38] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:38:38] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 15:38:38] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 15:38:38] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 15:38:38] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:38:38] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:38:38] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 15:38:39] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:38:39] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 15:38:39] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 15:38:39] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:43:43] [INFO] Starting KPI automation...
+[2026-04-07 15:43:43] [INFO] Folders verified/created.
+[2026-04-07 15:43:43] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 15:43:44] [INFO] Found 4 Excel files in data
+[2026-04-07 15:43:44] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:43:44] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 15:43:44] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 15:43:44] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 15:43:44] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 15:43:44] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 15:43:44] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 15:43:44] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:43:45] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:43:45] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 15:43:45] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 15:43:45] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 15:43:45] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:43:46] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:43:46] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 15:43:46] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:43:46] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 15:43:46] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 15:43:46] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:48:51] [INFO] Starting KPI automation...
+[2026-04-07 15:48:51] [INFO] Folders verified/created.
+[2026-04-07 15:48:51] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 15:48:51] [INFO] Found 4 Excel files in data
+[2026-04-07 15:48:51] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:48:51] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 15:48:51] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 15:48:51] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 15:48:51] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 15:48:51] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 15:48:51] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 15:48:52] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:48:53] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:48:53] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 15:48:53] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 15:48:53] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 15:48:53] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:48:54] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:48:54] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 15:48:54] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:48:54] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 15:48:54] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 15:48:54] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:53:02] [INFO] Starting KPI automation...
+[2026-04-07 15:53:02] [INFO] Folders verified/created.
+[2026-04-07 15:53:02] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 15:53:02] [INFO] Found 4 Excel files in data
+[2026-04-07 15:53:02] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:53:02] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 15:53:02] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 15:53:02] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 15:53:02] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 15:53:02] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 15:53:02] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 15:53:03] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:53:04] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:53:04] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 15:53:04] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 15:53:04] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 15:53:04] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:53:05] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:53:05] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 15:53:05] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:53:05] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 15:53:05] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 15:53:05] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:58:10] [INFO] Starting KPI automation...
+[2026-04-07 15:58:10] [INFO] Folders verified/created.
+[2026-04-07 15:58:10] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 15:58:10] [INFO] Found 4 Excel files in data
+[2026-04-07 15:58:10] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 15:58:10] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 15:58:10] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 15:58:10] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 15:58:10] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 15:58:10] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 15:58:10] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 15:58:11] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:58:12] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 15:58:12] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 15:58:12] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 15:58:12] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 15:58:12] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:58:12] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:58:12] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 15:58:13] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 15:58:13] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 15:58:13] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 15:58:13] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 16:03:17] [INFO] Starting KPI automation...
+[2026-04-07 16:03:17] [INFO] Folders verified/created.
+[2026-04-07 16:03:17] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 16:03:17] [INFO] Found 4 Excel files in data
+[2026-04-07 16:03:17] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 16:03:17] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 16:03:17] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 16:03:17] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 16:03:17] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 16:03:17] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 16:03:17] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 16:03:18] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 16:03:19] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 16:03:19] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 16:03:19] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 16:03:19] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 16:03:19] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:03:20] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:03:20] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 16:03:20] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:03:20] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 16:03:20] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 16:03:20] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 16:04:02] [INFO] Starting KPI automation...
+[2026-04-07 16:04:02] [INFO] Folders verified/created.
+[2026-04-07 16:04:02] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 16:04:02] [INFO] Found 4 Excel files in data
+[2026-04-07 16:04:02] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 16:04:02] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 16:04:02] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 16:04:02] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 16:04:02] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 16:04:02] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 16:04:02] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 16:04:03] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 16:04:04] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 16:04:04] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 16:04:04] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 16:04:04] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 16:04:04] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:04:05] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:04:05] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 16:04:05] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:04:05] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 16:04:05] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 16:04:05] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 16:09:10] [INFO] Starting KPI automation...
+[2026-04-07 16:09:10] [INFO] Folders verified/created.
+[2026-04-07 16:09:10] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 16:09:10] [INFO] Found 4 Excel files in data
+[2026-04-07 16:09:10] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 16:09:10] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 16:09:10] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 16:09:10] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 16:09:10] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 16:09:10] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 16:09:10] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 16:09:10] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 16:09:11] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 16:09:11] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 16:09:11] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 16:09:11] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 16:09:12] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:09:12] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:09:12] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 16:09:12] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:09:12] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 16:09:12] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 16:09:12] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 16:14:17] [INFO] Starting KPI automation...
+[2026-04-07 16:14:17] [INFO] Folders verified/created.
+[2026-04-07 16:14:17] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 16:14:17] [INFO] Found 4 Excel files in data
+[2026-04-07 16:14:17] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 16:14:17] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 16:14:17] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 16:14:17] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 16:14:17] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 16:14:17] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 16:14:17] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 16:14:18] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 16:14:19] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 16:14:19] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 16:14:19] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 16:14:19] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 16:14:19] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:14:19] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:14:20] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 16:14:20] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:14:20] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 16:14:20] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 16:14:20] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 16:19:25] [INFO] Starting KPI automation...
+[2026-04-07 16:19:25] [INFO] Folders verified/created.
+[2026-04-07 16:19:25] [INFO] 
+=== FILE DISCOVERY ===
+[2026-04-07 16:19:25] [INFO] Found 4 Excel files in data
+[2026-04-07 16:19:25] [INFO]   [MMC] 01-Rapport_quantite_MMC.xlsx
+[2026-04-07 16:19:25] [WARNING]   [UNKNOWN] Efficience.xlsx - could not detect type by name
+[2026-04-07 16:19:25] [INFO]   [FINAL_CONTROL] Saisie_controle_Finale.xlsx
+[2026-04-07 16:19:25] [INFO]   [CNC] Suivi_defauts_CNC.xlsx
+[2026-04-07 16:19:25] [INFO] 
+=== DATA LOADING ===
+[2026-04-07 16:19:25] [INFO] 
+--- Loading CNC files ---
+[2026-04-07 16:19:25] [INFO] Processing: Suivi_defauts_CNC.xlsx
+[2026-04-07 16:19:25] [INFO]   Loaded 'Liste déroulante' (56 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 16:19:26] [INFO]   Loaded 'Feuil2' (12841 rows) from Suivi_defauts_CNC.xlsx
+[2026-04-07 16:19:26] [SUCCESS] Combined 2 sheets into 12149 rows for CNC
+[2026-04-07 16:19:26] [INFO] 
+--- Loading FINAL_CONTROL files ---
+[2026-04-07 16:19:26] [INFO] Processing: Saisie_controle_Finale.xlsx
+[2026-04-07 16:19:27] [INFO]   Loaded 'Sheet1' (2686 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:19:27] [INFO]   Loaded 'Feuil3' (2809 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:19:27] [WARNING]   Sheet 'Feuil1' in Saisie_controle_Finale.xlsx is empty
+[2026-04-07 16:19:27] [INFO]   Loaded 'Sheet2' (40 rows) from Saisie_controle_Finale.xlsx
+[2026-04-07 16:19:27] [SUCCESS] Combined 3 sheets into 5472 rows for FINAL_CONTROL
+[2026-04-07 16:19:27] [INFO] 
+--- Loading MMC files ---
+[2026-04-07 16:19:27] [INFO] Processing: 01-Rapport_quantite_MMC.xlsx

@@ -1,0 +1,7 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-CORS==4.0.0
+PyMySQL==1.1.0
+mysql-connector-python==8.0.33
+Werkzeug==3.0.3

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KPI Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script>
+        if (window.Chart && window.ChartDataLabels) {
+            Chart.register(ChartDataLabels);
+        }
+    </script>
+    <!-- Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (free icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+    <style>
+        /* Global design refresh – modern, clean, professional */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: #f4f7fc;
+            color: #1e2a3e;
+            line-height: 1.5;
+        }
+
+        /* Navbar – sleek glass effect */
+        .navbar {
+            background: linear-gradient(135deg, #0b2b3b 0%, #133e52 100%);
+            color: white;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            background: linear-gradient(120deg, #ffffff, #c6e9ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            background: rgba(255,255,255,0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+        }
+
+        .badge {
+            margin-left: 8px;
+            padding: 4px 8px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-manager {
+            background: #ffb74d;
+            color: #2c3e2f;
+        }
+
+        .badge-employee {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-logout {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: #e63946;
+            border-color: #e63946;
+            color: white;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Cards & modern shadows - with larger chart containers */
+        .kpi-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03), 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            border: 1px solid #eef2f5;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.12);
+            border-color: #dce5ec;
+        }
+
+        .kpi-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: #1f4e6e;
+            border-left: 4px solid #2c7da0;
+            padding-left: 14px;
+            letter-spacing: -0.2px;
+        }
+
+        /* Larger chart containers */
+        .kpi-card canvas {
+            min-height: 320px;
+            max-height: 400px;
+            width: 100% !important;
+        }
+
+        /* Dashboard grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.8rem;
+            margin-top: 1rem;
+        }
+
+        .kpi-card.wide {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 1000px) {
+            .kpi-card.wide {
+                grid-column: span 1;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tables – clean */
+        .data-table {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #f0f6fa;
+            color: #1b4b6c;
+            font-weight: 600;
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 2px solid #d4e2ec;
+        }
+
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #eaf0f5;
+            color: #2c3e50;
+        }
+
+        tr:hover td {
+            background: #fafdff;
+        }
+
+        /* Tab bar - completely revamped for better overflow handling */
+        .tabs-container {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 28px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e9edf2;
+            overflow: visible;
+        }
+
+        .tabs-wrapper {
+            display: flex;
+            align-items: stretch;
+            background: white;
+            position: relative;
+            overflow: visible;
+        }
+
+        .tabs {
+            display: flex;
+            flex: 1;
+            overflow-x: auto;
+            overflow-y: visible;
+            scrollbar-width: thin;
+            gap: 0;
+            padding: 0;
+        }
+
+        .tabs::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .tabs::-webkit-scrollbar-track {
+            background: #eef2f6;
+        }
+
+        .tabs::-webkit-scrollbar-thumb {
+            background: #b9d0e0;
+            border-radius: 10px;
+        }
+
+        .tab-button {
+            background: transparent;
+            border: none;
+            padding: 1rem 1.8rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #4a627a;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            position: relative;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button.active {
+            color: #1f6392;
+            border-bottom-color: #1f6392;
+            background: #f8fbfe;
+        }
+
+        .tab-button:hover:not(.active) {
+            background: #f5f8fc;
+            color: #2c7da0;
+        }
+
+        /* More button section - properly styled and functional with extended dropdown */
+        .tabs-more-wrapper {
+            position: relative;
+            background: white;
+            border-left: 1px solid #e9edf2;
+            overflow: visible;
+        }
+
+        .tab-more-btn {
+            background: white;
+            border: none;
+            padding: 1rem 1.8rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #2c7da0;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            height: 100%;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-more-btn i {
+            font-size: 0.8rem;
+            transition: transform 0.2s;
+        }
+
+        .tab-more-btn:hover {
+            background: #f5f8fc;
+            color: #1f6392;
+        }
+
+        /* Dropdown that extends beyond container - fixed positioning relative to viewport */
+        .tabs-dropdown {
+            display: none;
+            position: fixed;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+            z-index: 9999;
+            min-width: 240px;
+            flex-direction: column;
+            padding: 8px 0;
+            border: 1px solid #eef2f8;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .tabs-dropdown.open {
+            display: flex;
+        }
+
+        .dropdown-tab-btn {
+            padding: 12px 24px;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #2c5a7a;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+
+        .dropdown-tab-btn:hover {
+            background: #eef4fc;
+            color: #1f6392;
+        }
+
+        .dropdown-tab-btn.active {
+            background: #e3f0fa;
+            font-weight: 700;
+            color: #135b87;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fade 0.25s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(6px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* Year/Month filter – stylish */
+        .header-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        .year-filter, .month-filter {
+            background: white;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid #dee4ea;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .year-filter label, .month-filter label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #2c5a7a;
+        }
+
+        select {
+            border: none;
+            background: transparent;
+            font-weight: 500;
+            font-size: 0.85rem;
+            padding: 0.4rem 0;
+            outline: none;
+            color: #1f3b4c;
+            cursor: pointer;
+        }
+
+        /* Dashboard header */
+        .dashboard-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 1.8rem;
+        }
+
+        .dashboard-header h2 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1f6392, #3b8db5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: #5f7f9e;
+            background: #eef3fa;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        /* Footer – redesigned with uni + company */
+        .footer {
+            background: #0f2c38;
+            color: #cddfe7;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.8rem;
+            margin-top: 3rem;
+            border-top: 1px solid #254e5e;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .footer p {
+            margin: 0.3rem 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer i {
+            color: #6ab0d6;
+            width: 20px;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin: 2rem;
+        }
+        .spinner div {
+            width: 10px;
+            height: 10px;
+            background: #2c7da0;
+            border-radius: 50%;
+            animation: spin 1s infinite ease-in-out;
+        }
+        @keyframes spin {
+            0%,100%{ transform: translateY(0); opacity: 0.3; }
+            50%{ transform: translateY(-12px); opacity: 1; }
+        }
+
+        /* tooltips for charts */
+        [title] {
+            cursor: help;
+        }
+
+        /* Alert styling */
+        .alert {
+            border-radius: 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Wrapper adjustment for dynamic content */
+        #dynamicTabs {
+            display: contents;
+        }
+
+        /* Ensure dropdown doesn't get clipped */
+        .dashboard {
+            overflow: visible;
+        }
+        
+        .tabs-wrapper,
+        .tabs-container {
+            overflow: visible !important;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h1><i class="fas fa-chart-line" style="margin-right: 8px;"></i>KPI Dashboard</h1>
+        </div>
+        <div class="navbar-menu">
+            {% if current_user.is_authenticated %}
+                <span class="user-info"><i class="fas fa-user-circle"></i> {{ current_user.username }} {% if current_user.is_manager() %}<span class="badge badge-manager"><i class="fas fa-chart-simple"></i> Manager</span>{% else %}<span class="badge badge-employee"><i class="fas fa-user-check"></i> Employee</span>{% endif %}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" style="background:#e3f2fd; border-left:5px solid #2196f3; padding:12px 18px; border-radius:16px; margin-bottom:20px; font-weight:500;">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p><i class="fas fa-university"></i> I.S.E.T Kairouan - Internship Project</p>
+            <p><i class="fas fa-industry"></i> In collaboration with <strong>LEONI</strong> | Wiring Systems</p>
+            <p><i class="far fa-copyright"></i> 2026 KPI Automation System - MMC</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
